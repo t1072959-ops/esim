@@ -24,6 +24,21 @@ const AIO_URL = process.env.ECPAY_AIO_URL || 'https://payment-stage.ecpay.com.tw
 // ^ default is ECPay's STAGE (sandbox) endpoint. Production is:
 //   https://payment.ecpay.com.tw/Cashier/AioCheckOut/V5
 
+if (process.env.DEBUG_ECPAY === 'true') {
+  // Never prints the actual secret values - just enough to catch the #1
+  // cause of "CheckMacValue Error": invisible leading/trailing whitespace
+  // or a newline that snuck in when the value was pasted into Render.
+  const describe = (name, val) => {
+    if (!val) return console.log(`[ecpay debug] ${name} is NOT SET`);
+    const hasWhitespace = val !== val.trim();
+    console.log(`[ecpay debug] ${name}: length=${val.length}, has_leading_or_trailing_whitespace=${hasWhitespace}, first_char="${val[0]}", last_char="${val[val.length - 1]}"`);
+  };
+  describe('ECPAY_MERCHANT_ID', MERCHANT_ID);
+  describe('ECPAY_HASH_KEY', HASH_KEY);
+  describe('ECPAY_HASH_IV', HASH_IV);
+  console.log('[ecpay debug] ECPAY_AIO_URL:', JSON.stringify(AIO_URL));
+}
+
 function dotNetUrlEncode(str) {
   return encodeURIComponent(str)
     .replace(/%20/g, '+')
@@ -39,7 +54,20 @@ function buildCheckMacValue(params) {
   const query = sortedKeys.map((k) => `${k}=${params[k]}`).join('&');
   const raw = `HashKey=${HASH_KEY}&${query}&HashIV=${HASH_IV}`;
   const encoded = dotNetUrlEncode(raw).toLowerCase();
-  return crypto.createHash('sha256').update(encoded).digest('hex').toUpperCase();
+  const mac = crypto.createHash('sha256').update(encoded).digest('hex').toUpperCase();
+
+  if (process.env.DEBUG_ECPAY === 'true') {
+    // Deliberately mask the key/iv themselves so this is safe to leave on
+    // briefly even with real credentials - only the *structure* is useful.
+    const masked = encoded
+      .replaceAll(HASH_KEY.toLowerCase(), '***HASHKEY***')
+      .replaceAll(HASH_IV.toLowerCase(), '***HASHIV***');
+    console.log('[ecpay debug] params (sorted, before hashing):', query);
+    console.log('[ecpay debug] final string fed into SHA256:', masked);
+    console.log('[ecpay debug] resulting CheckMacValue:', mac);
+  }
+
+  return mac;
 }
 
 /**
