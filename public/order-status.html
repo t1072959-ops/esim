@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>訂單狀態</title>
+<style>
+  body{font-family:-apple-system,'PingFang TC',sans-serif;background:#F7F5EF;color:#16233F;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;}
+  .card{background:#fff;border-radius:14px;padding:32px;max-width:360px;width:100%;box-shadow:0 10px 30px rgba(22,35,63,0.12);text-align:center;}
+  .qr{width:180px;height:180px;margin:16px auto;background:repeating-linear-gradient(90deg,#16233F 0 7px,transparent 7px 14px),repeating-linear-gradient(0deg,#16233F 0 7px,transparent 7px 14px);background-blend-mode:multiply;background-color:#fff;border-radius:8px;border:1px solid #eee;}
+  .status{font-size:14px;color:#2B3A5C;margin-top:10px;}
+  .lpa{font-family:monospace;font-size:11px;background:#EDE9DE;padding:8px;border-radius:6px;word-break:break-all;margin-top:12px;}
+</style>
+</head>
+<body>
+  <div class="card">
+    <h2>訂單狀態</h2>
+    <div id="content" class="status">查詢中...</div>
+  </div>
+<script>
+const params = new URLSearchParams(location.search);
+const orderId = params.get('orderId');
+const content = document.getElementById('content');
+
+async function poll(){
+  try{
+    const res = await fetch(`/api/orders/${orderId}`);
+    const data = await res.json();
+    if(data.status === 'issued'){
+      content.innerHTML = `
+        <div class="qr"></div>
+        <div class="lpa">${data.qrCode || data.iccid || '(等待批發商回傳 QR)'}</div>
+        <p>掃描上方 QR Code 安裝 eSIM</p>`;
+      return; // stop polling
+    }
+    if(data.status === 'esim_order_failed'){
+      content.textContent = data.error;
+      return;
+    }
+    content.textContent = `目前狀態：${data.status}`;
+    setTimeout(poll, 2000);
+  }catch(e){
+    content.textContent = '查詢失敗，請重新整理頁面';
+  }
+}
+if(orderId) poll();
+else content.textContent = '缺少 orderId';
+</script>
+</body>
+</html>
