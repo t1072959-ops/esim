@@ -13,7 +13,7 @@
 // ---------------------------------------------------------------------------
 const CATALOG = {
   jp_5gb_8d: {
-    name: '日本標準流量 5GB / 8天',
+    name: '日本標準流量 5GB / 7天',
     packageCode: 'JP_5_8',   // <-- replace with the real packageCode from eSIM Access
     wholesalePriceTwd: 130,   // what eSIM Access charges you
     retailPriceTwd: 180,      // what you charge the customer
