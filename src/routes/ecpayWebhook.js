@@ -32,6 +32,18 @@ router.post('/webhooks/ecpay', express.urlencoded({ extended: false }), async (r
 
   updateOrder(orderId, { status: 'paid' });
 
+  // Testing escape hatch: set SKIP_ESIM_ORDER=true in .env to verify the
+  // ECPay payment flow end-to-end WITHOUT placing a real (money-spending)
+  // eSIM Access order. Remove/unset this before going live.
+  if (process.env.SKIP_ESIM_ORDER === 'true') {
+    console.log(`[ecpay webhook] SKIP_ESIM_ORDER=true - marking ${orderId} as issued without calling eSIM Access`);
+    updateOrder(orderId, {
+      status: 'issued',
+      qrCode: 'TEST_MODE_NO_REAL_ESIM_ORDERED',
+    });
+    return res.send('1|OK');
+  }
+
   // 2. Payment confirmed -> order the real eSIM from the wholesaler.
   try {
     const plan = getPlan(order.planId);
