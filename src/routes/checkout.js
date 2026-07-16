@@ -12,13 +12,16 @@ const router = express.Router();
 // always identical, with no separate "sanitized" version to keep in sync.
 const genOrderId = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789', 16);
 
-// POST /api/checkout  { planId, email }
-router.post('/checkout', express.json(), (req, res) => {
+// POST /api/checkout  { planId, email } - accepts JSON (curl/API callers) or
+// application/x-www-form-urlencoded (the real <form> the storefront submits).
+router.post('/checkout', express.urlencoded({ extended: false }), express.json(), (req, res) => {
   try {
     const { planId, email } = req.body;
     const plan = getPlan(planId);
     if (!plan) return res.status(400).json({ error: `Unknown planId: ${planId}` });
-    if (!email) return res.status(400).json({ error: 'email is required' });
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return res.status(400).json({ error: 'A valid email is required' });
+    }
 
     const orderId = `o${genOrderId()}`;
     createOrder({

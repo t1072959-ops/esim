@@ -5,6 +5,7 @@ const path = require('path');
 const checkoutRouter = require('./routes/checkout');
 const ecpayWebhookRouter = require('./routes/ecpayWebhook');
 const ordersRouter = require('./routes/orders');
+const plansRouter = require('./routes/plans');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -21,6 +22,7 @@ app.get('/', (req, res) => {
 app.use('/api', checkoutRouter);
 app.use('/api', ecpayWebhookRouter);
 app.use('/api', ordersRouter);
+app.use('/api', plansRouter);
 
 // convenience: serve order-status.html at the root path used in ecpay.js's clientBackUrl
 app.get('/order-status.html', (req, res) => {

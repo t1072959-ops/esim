@@ -18,10 +18,13 @@ ECPay 付款完成
 已經在這個環境裡實際跑過、驗證過的部分：
 - ✅ Express 伺服器可以啟動
 - ✅ `/api/checkout` 會建立訂單並產生**正確的 ECPay CheckMacValue 簽章**（SHA256、64 碼 hex）
-- ✅ `/api/webhooks/ecpay` 會正確驗證簽章、正確用 MerchantTradeNo 找回訂單
+- ✅ `/api/webhooks/ecpay` 會正確驗證簽章、正確用 MerchantTradeNo 找回訂單（也實測過：簽章錯誤或金額被竄改時會正確拒絕）
 - ✅ 付款成功會嘗試呼叫 eSIM Access API，失敗時會正確標記訂單為 `esim_order_failed` 並回傳客服訊息，不會讓整個系統掛掉
-- ✅ `esim-shop.html`（展示頁面）已經接上真實後端：首頁由 Express 直接提供（`GET /`），「立即購買」會呼叫真正的 `POST /api/checkout`，成功後整頁會被 ECPay 導向頁取代並自動送出付款表單；9 個方案都已對應到 `src/catalog.js` 裡的 planId，不再是假資料的 `setTimeout` demo
+- ✅ `esim-shop.html`（首頁）已經接上真實後端，而且**價格不再是前端自己算的假資料**：新增了 `GET /api/plans`，首頁會即時抓取 `src/catalog.js` 裡的方案（名稱、GB、天數、價格），畫面上看到的每一張方案卡片都對應到後端真正會收費、真正會下單的 planId。按下「前往付款」是一個真正的 `<form method="POST" action="/api/checkout">` 送出，不是 JS 假動畫 —— 瀏覽器會真的導到 `/api/checkout`，再被自動導向 ECPay 付款頁。
+- ✅ `public/order-status.html`（QR 頁）已經改成跟首頁**同一套視覺語言**（同樣的暖色配色、同樣的 Inter / Noto Sans TC / JetBrains Mono 字體、同樣的品牌標記），輪詢 `GET /api/orders/:id` 直到出票完成的邏輯不變。
+- ✅ 完整流程本機實測過三種結果：付款成功（狀態變 `issued`，QR 資料正確存入）、簽章被竄改（正確擋下、不採信）、簽章正確但付款失敗（狀態變 `payment_failed`）。
 - ⚠️ 沒辦法在這個沙盒環境實際打通 `api.esimaccess.com`（網路白名單限制），所以 eSIM Access 那段的**確切路徑名稱**（下單、查詢、餘額）沒有 100% 逐一核對，程式碼裡已經清楚標註哪些地方要在你申請帳號後去 Postman collection 核對。
+- ⚠️ `.env` 裡目前是 ECPay **官方公開的測試帳號**，可以直接拿來跑通整個金流畫面，但不會有真的錢入帳；要收真錢請看下面「上線前必做的三件事」。
 
 ## 快速開始
 
@@ -78,13 +81,14 @@ curl http://localhost:3000/api/orders/<orderId>
 src/
   index.js              Express 進入點
   db.js                 訂單儲存（JSON 檔案，量大了再換 Postgres）
-  catalog.js            你的方案 -> eSIM Access packageCode 對應表
+  catalog.js            你的方案 -> eSIM Access packageCode 對應表（唯一真實價格來源）
   ecpay.js              ECPay CheckMacValue 簽章 + 表單產生
   esimAccessClient.js   eSIM Access API 客戶端
   routes/
     checkout.js         POST /api/checkout
     ecpayWebhook.js      POST /api/webhooks/ecpay
     orders.js            GET  /api/orders/:orderId
+    plans.js              GET  /api/plans（首頁抓方案清單用，避免前端自己編價格）
 public/
-  order-status.html     客人付款完成後看到的頁面，會輪詢訂單狀態
+  order-status.html     客人付款完成後看到的頁面，會輪詢訂單狀態，視覺跟首頁同一套
 ```
