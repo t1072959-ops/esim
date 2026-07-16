@@ -3,240 +3,202 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>連線登機證 · eSIM 轉售平台</title>
+<title>eSIM 精選漫遊 · 日本 韓國 東南亞</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink:#16233F;
-    --ink-soft:#2B3A5C;
-    --paper:#F7F5EF;
-    --paper-dim:#EDE9DE;
+    --paper:#FFFFFF;
+    --paper-dim:#F5F4F1;
+    --card:#FFFFFF;
+    --ink:#241C14;
+    --ink-soft:#69604F;
+    --ink-faint:#948A76;
+    --accent:#C1502E;
+    --accent-deep:#9C3E22;
     --gold:#E8A33D;
     --teal:#2F9E8F;
-    --red:#C1502E;
-    --line: rgba(22,35,63,0.16);
+    --line: rgba(36,28,20,0.12);
+    --line-strong: rgba(36,28,20,0.24);
+    --sans: 'Inter', 'Noto Sans TC', -apple-system, 'PingFang TC', sans-serif;
     --mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
   }
   *{box-sizing:border-box;}
-  body{
-    margin:0;
-    background:var(--paper);
-    color:var(--ink);
-    font-family: 'Inter', -apple-system, 'Segoe UI', 'PingFang TC', 'Noto Sans TC', sans-serif;
-    -webkit-font-smoothing:antialiased;
-  }
-  ::selection{ background:var(--gold); color:var(--ink); }
+  html{scroll-behavior:smooth;}
+  body{ margin:0; background:var(--paper); color:var(--ink); font-family:var(--sans); -webkit-font-smoothing:antialiased; line-height:1.5; }
+  ::selection{ background:var(--accent); color:#fff; }
 
-  /* ---------- HEADER ---------- */
-  header{
-    padding:28px 6vw 20px;
-    display:flex; justify-content:space-between; align-items:center;
-    border-bottom:1px solid var(--line);
-  }
-  .logo{ display:flex; align-items:center; gap:10px; }
-  .logo-mark{
-    width:34px; height:34px; border-radius:8px;
-    background:var(--ink);
-    position:relative;
-  }
-  .logo-mark::after{
-    content:'';
-    position:absolute; inset:8px;
-    border:2px solid var(--gold);
-    border-radius:3px;
-  }
-  .logo-text{ font-weight:700; letter-spacing:0.02em; font-size:15px; }
-  .logo-text span{ color:var(--teal); }
-  nav a{
-    color:var(--ink-soft); text-decoration:none; font-size:13.5px;
-    margin-left:28px; font-weight:500;
-  }
-  nav a:hover{ color:var(--gold); }
+  header{ padding:22px 6vw; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--line); position:sticky; top:0; background:rgba(255,255,255,0.92); backdrop-filter:blur(8px); z-index:40; }
+  .brand{ display:flex; align-items:center; gap:10px; font-weight:800; font-size:15.5px; }
+  .brand-mark{ width:28px; height:28px; border-radius:8px; background:var(--ink); position:relative; }
+  .brand-mark::after{ content:''; position:absolute; inset:7px; border:2px solid var(--gold); border-radius:3px; }
+  nav{ display:flex; align-items:center; gap:28px; }
+  nav a{ color:var(--ink-soft); text-decoration:none; font-size:13.5px; font-weight:600; }
+  nav a:hover{ color:var(--accent); }
+  .nav-cta{ background:var(--accent); color:#fff !important; padding:9px 18px; border-radius:8px; }
+  .nav-cta:hover{ background:var(--accent-deep); }
 
-  /* ---------- HERO ---------- */
-  .hero{
-    padding:70px 6vw 50px;
-    display:grid; grid-template-columns:1.1fr 0.9fr; gap:40px; align-items:center;
-  }
-  .eyebrow{
-    font-family:var(--mono); font-size:12px; letter-spacing:0.14em;
-    text-transform:uppercase; color:var(--teal); margin-bottom:14px;
-    display:flex; align-items:center; gap:8px;
-  }
-  .eyebrow::before{ content:''; width:22px; height:1px; background:var(--teal); }
-  h1{
-    font-size:clamp(34px,4.2vw,56px); line-height:1.08; margin:0 0 18px;
-    font-weight:800; letter-spacing:-0.01em;
-  }
-  h1 em{ font-style:normal; color:var(--gold); }
-  .hero p{ font-size:16px; line-height:1.7; color:var(--ink-soft); max-width:46ch; }
-  .hero-actions{ margin-top:28px; display:flex; gap:14px; }
-  .btn{
-    border:none; cursor:pointer; font-weight:700; font-size:14px;
-    padding:14px 24px; border-radius:8px; transition:transform .15s ease, box-shadow .15s ease;
-  }
-  .btn:active{ transform:scale(0.97); }
-  .btn-primary{ background:var(--ink); color:var(--paper); }
-  .btn-primary:hover{ box-shadow:0 8px 20px rgba(22,35,63,0.25); }
-  .btn-ghost{ background:transparent; color:var(--ink); border:1.5px solid var(--line); }
+  /* ---------- HERO (boarding pass restored) ---------- */
+  .hero{ padding:7vh 6vw 6vh; display:grid; grid-template-columns:1.1fr 0.9fr; gap:44px; align-items:center; }
+  .eyebrow{ font-family:var(--mono); font-size:12px; letter-spacing:0.1em; text-transform:uppercase; color:var(--accent); font-weight:700; margin-bottom:16px; }
+  h1{ font-size:clamp(30px,4vw,46px); line-height:1.25; margin:0 0 18px; font-weight:800; letter-spacing:-0.01em; }
+  h1 .accent{ color:var(--accent); }
+  .hero p{ font-size:15.5px; line-height:1.85; color:var(--ink-soft); max-width:48ch; margin:0 0 30px; }
+  .btn{ border:none; cursor:pointer; font-weight:700; font-size:14px; padding:14px 26px; border-radius:8px; transition:all .15s ease; }
+  .btn-primary{ background:var(--accent); color:#fff; }
+  .btn-primary:hover{ background:var(--accent-deep); }
+  .btn-ghost{ background:transparent; color:var(--ink); border:1.5px solid var(--line-strong); }
+  .btn-ghost:hover{ border-color:var(--ink); }
+  .hero-actions{ display:flex; gap:14px; }
 
-  /* stub ticket illustration in hero */
-  .stub-preview{
-    background:var(--ink); border-radius:16px; padding:26px;
-    position:relative; overflow:hidden; color:var(--paper);
-    box-shadow:0 20px 50px rgba(22,35,63,0.28);
-  }
+  .stub-preview{ background:var(--ink); border-radius:16px; padding:26px; position:relative; overflow:hidden; color:var(--paper); box-shadow:0 20px 50px rgba(36,28,20,0.28); }
   .stub-preview .row{ display:flex; justify-content:space-between; font-family:var(--mono); font-size:11px; opacity:0.65; text-transform:uppercase; letter-spacing:0.08em;}
-  .stub-preview .route{ font-size:30px; font-weight:800; margin:14px 0 4px; letter-spacing:-0.02em;}
-  .stub-preview .sub{ font-size:13px; opacity:0.7; margin-bottom:20px;}
-  .perf{
-    border-top:2px dashed rgba(247,245,239,0.28); margin:18px 0; position:relative;
-  }
-  .perf::before,.perf::after{
-    content:''; position:absolute; top:-11px; width:22px; height:22px; border-radius:50%; background:var(--paper);
-  }
+  .stub-preview .route{ font-size:28px; font-weight:800; margin:14px 0 4px; letter-spacing:-0.02em;}
+  .stub-preview .sub{ font-size:13px; opacity:0.72; margin-bottom:18px;}
+  .perf{ border-top:2px dashed rgba(255,255,255,0.28); margin:16px 0; position:relative; }
+  .perf::before,.perf::after{ content:''; position:absolute; top:-11px; width:22px; height:22px; border-radius:50%; background:var(--paper); }
   .perf::before{ left:-26px; } .perf::after{ right:-26px; }
-  .qr-mock{
-    width:86px; height:86px; border-radius:6px; margin-left:auto;
-    background:
-      repeating-linear-gradient(90deg, var(--paper) 0 6px, transparent 6px 12px),
-      repeating-linear-gradient(0deg, var(--paper) 0 6px, transparent 6px 12px);
-    background-blend-mode:screen; opacity:0.9;
-  }
+  .qr-mock{ width:80px; height:80px; border-radius:6px; margin-left:auto; background: repeating-linear-gradient(90deg, var(--paper) 0 6px, transparent 6px 12px), repeating-linear-gradient(0deg, var(--paper) 0 6px, transparent 6px 12px); background-blend-mode:screen; opacity:0.9; }
   .stub-preview .meta{ display:flex; justify-content:space-between; align-items:flex-end; }
   .stub-preview .meta div{ font-family:var(--mono); font-size:11px; opacity:0.6; }
-  .stub-preview .meta strong{ display:block; font-size:15px; color:var(--paper); font-family:inherit; opacity:1; }
+  .stub-preview .meta strong{ display:block; font-size:14px; color:var(--paper); font-family:inherit; opacity:1; }
 
-  /* ---------- REGION TABS ---------- */
-  .shop{ padding:20px 6vw 90px; }
-  .shop-head{ display:flex; align-items:baseline; justify-content:space-between; margin-bottom:26px; flex-wrap:wrap; gap:14px;}
-  .shop-head h2{ font-size:24px; margin:0; }
-  .tabs{ display:flex; gap:8px; }
-  .tab{
-    font-family:var(--mono); font-size:12.5px; padding:9px 16px; border-radius:20px;
-    border:1px solid var(--line); background:transparent; cursor:pointer; color:var(--ink-soft);
-    transition:all .15s ease;
+  .stats{ border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding:22px 6vw; display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; max-width:900px; margin:0 auto; }
+  .stat-item{ flex:1 1 140px; text-align:center; }
+  .stat-item .num{ font-size:20px; color:var(--ink); font-weight:800; }
+  .stat-item .lbl{ font-size:12px; color:var(--ink-faint); margin-top:2px; }
+  @media (max-width:560px){
+    .stats{ justify-content:center; }
+    .stat-item{ flex:1 1 30%; }
   }
-  .tab.active{ background:var(--ink); color:var(--paper); border-color:var(--ink); }
 
-  .grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:22px; }
+  /* ---------- COMPATIBILITY ---------- */
+  .compat{ padding:7vh 6vw; border-bottom:1px solid var(--line); }
+  .compat-inner{ background:var(--card); border:1px solid var(--line); border-radius:14px; padding:32px 34px; display:grid; grid-template-columns:0.9fr 1.1fr; gap:36px; align-items:center; }
+  .compat h2{ font-size:20px; font-weight:800; margin:0 0 10px; }
+  .compat p{ font-size:13.5px; color:var(--ink-soft); line-height:1.75; margin:0; }
+  .compat-list{ display:flex; flex-direction:column; gap:14px; }
+  .compat-row{ display:flex; gap:12px; align-items:flex-start; font-size:13.5px; }
+  .check{ width:20px; height:20px; border-radius:50%; background:var(--teal); color:#fff; flex:none; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; }
+  .compat-row strong{ display:block; margin-bottom:2px; }
+  .compat-row span{ color:var(--ink-soft); }
 
-  /* ---------- TICKET CARD ---------- */
-  .ticket{
-    background:#fff; border-radius:14px; overflow:hidden;
-    border:1px solid var(--line);
-    box-shadow:0 2px 0 var(--line);
-    display:flex; flex-direction:column;
-    transition:transform .15s ease, box-shadow .15s ease;
-  }
-  .ticket:hover{ transform:translateY(-4px); box-shadow:0 16px 30px rgba(22,35,63,0.12); }
-  .ticket-top{ padding:20px 22px 16px; }
-  .ticket-top .flag{ font-size:26px; margin-bottom:10px; display:block;}
-  .ticket-top h3{ margin:0 0 4px; font-size:19px; }
-  .ticket-top .provider{ font-family:var(--mono); font-size:11px; color:var(--teal); text-transform:uppercase; letter-spacing:0.06em;}
-  .ticket-mid{ display:flex; gap:16px; padding:0 22px 18px; }
-  .stat{ }
-  .stat .num{ font-size:22px; font-weight:800; }
-  .stat .lbl{ font-family:var(--mono); font-size:10.5px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:0.05em; }
-  .tperf{
-    border-top:2px dashed var(--line); position:relative; margin:0 0;
-  }
-  .tperf::before,.tperf::after{
-    content:''; position:absolute; top:-10px; width:20px; height:20px; border-radius:50%; background:var(--paper);
-  }
-  .tperf::before{ left:-10px; } .tperf::after{ right:-10px; }
-  .ticket-bottom{
-    padding:16px 22px 20px; display:flex; justify-content:space-between; align-items:center; background:var(--paper-dim);
-  }
-  .price{ font-size:22px; font-weight:800; }
-  .price span{ font-size:12px; color:var(--ink-soft); font-weight:500; }
-  .buy-btn{
-    background:var(--gold); color:var(--ink); border:none; border-radius:8px;
-    padding:10px 18px; font-weight:700; font-size:13px; cursor:pointer;
-  }
-  .buy-btn:hover{ filter:brightness(0.95); }
+  /* ---------- SHOP / CONFIGURATOR ---------- */
+  .shop{ padding:8vh 6vw; }
+  .shop-head{ margin-bottom:6px; }
+  .shop-head h2{ font-size:clamp(22px,2.4vw,28px); font-weight:800; margin:0 0 6px; }
+  .shop-head p{ color:var(--ink-soft); font-size:14px; margin:0 0 30px; }
+  .tabs{ display:flex; gap:10px; margin-bottom:30px; flex-wrap:wrap; }
+  .tab{ display:flex; align-items:center; gap:8px; font-size:13.5px; font-weight:700; padding:9px 20px 9px 14px; border-radius:20px; border:1.5px solid var(--line-strong); background:var(--card); cursor:pointer; color:var(--ink-soft); transition:all .15s ease; }
+  .tab .flag{ font-size:16px; line-height:1; }
+  .tab.active{ background:var(--ink); color:#fff; border-color:var(--ink); }
+  .tab:hover:not(.active){ border-color:var(--ink); color:var(--ink); }
 
-  /* ---------- TRUST BAR ---------- */
-  .trust{ padding:10px 6vw 70px; }
-  .trust-grid{
-    display:grid; grid-template-columns:repeat(3,1fr); gap:1px;
-    background:var(--line); border:1px solid var(--line); border-radius:12px; overflow:hidden;
-  }
-  .trust-item{ background:var(--paper); padding:22px 20px; text-align:center; }
-  .trust-num{ font-family:var(--mono); font-size:24px; font-weight:800; color:var(--ink); }
-  .trust-lbl{ font-size:12.5px; color:var(--ink-soft); margin-top:4px; }
+  .configurator{ background:var(--card); border:1px solid var(--line); border-radius:14px; padding:34px; max-width:640px; }
+  .config-region-label{ font-family:var(--mono); font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:var(--accent); font-weight:700; margin-bottom:8px; display:flex; align-items:center; gap:8px; }
+  .config-region-label .flag{ font-size:15px; }
+  .configurator h3{ font-size:22px; font-weight:800; margin:0 0 10px; }
+  .config-desc{ font-size:13.5px; color:var(--ink-soft); line-height:1.75; margin-bottom:26px; }
+
+  .field-row{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:22px; }
+  .field-row.single{ grid-template-columns:1fr; }
+  .field label{ display:block; font-size:12px; font-weight:700; color:var(--ink-soft); margin-bottom:8px; }
+  .select-wrap{ position:relative; }
+  .select-wrap::after{ content:'▾'; position:absolute; right:14px; top:50%; transform:translateY(-50%); color:var(--accent); font-size:12px; pointer-events:none; }
+  select{ appearance:none; -webkit-appearance:none; width:100%; padding:13px 36px 13px 14px; border:1.5px solid var(--line-strong); border-radius:8px; font-size:14px; font-family:var(--sans); font-weight:600; color:var(--ink); background:var(--paper-dim); cursor:pointer; }
+  select:focus{ outline:2px solid var(--accent); outline-offset:1px; }
+
+  .config-divider{ border-top:1px solid var(--line); margin:0 0 22px; }
+  .config-bottom{ display:flex; justify-content:space-between; align-items:center; }
+  .price{ font-size:26px; font-weight:800; color:var(--ink); }
+  .price span{ font-size:12px; color:var(--ink-faint); font-weight:500; margin-left:4px;}
+  .buy-btn{ background:var(--accent); color:#fff; border:none; border-radius:8px; padding:13px 26px; font-weight:700; font-size:13.5px; cursor:pointer; }
+  .buy-btn:hover{ background:var(--accent-deep); }
+
+  /* ---------- HOW IT WORKS ---------- */
+  .how{ padding:8vh 6vw; border-top:1px solid var(--line); }
+  .how-head{ max-width:34em; margin-bottom:40px; }
+  .how-head h2{ font-size:clamp(22px,2.4vw,28px); font-weight:800; margin:0 0 12px; }
+  .how-head p{ color:var(--ink-soft); font-size:14px; line-height:1.8; margin:0; }
+  .how-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:36px; }
+  .how-step .idx{ font-family:var(--mono); font-size:12px; color:var(--accent); font-weight:700; margin-bottom:12px; }
+  .how-step h4{ font-size:15.5px; margin:0 0 8px; font-weight:700; }
+  .how-step p{ font-size:13.5px; color:var(--ink-soft); line-height:1.75; margin:0; }
+  .how-line{ height:2px; background:var(--line-strong); margin-bottom:16px; }
+
+  /* ---------- GUARANTEE + FAQ ---------- */
+  .guarantee{ padding:8vh 6vw; border-top:1px solid var(--line); background:var(--paper-dim); }
+  .guarantee-head{ max-width:34em; margin-bottom:36px; }
+  .guarantee-head h2{ font-size:clamp(22px,2.4vw,28px); font-weight:800; margin:0 0 12px; }
+  .guarantee-head p{ color:var(--ink-soft); font-size:14px; line-height:1.8; margin:0; }
+  .guarantee-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-bottom:50px; }
+  .g-card{ background:var(--card); border:1px solid var(--line); border-radius:12px; padding:22px 20px; }
+  .g-card h4{ font-size:14.5px; font-weight:800; margin:0 0 8px; }
+  .g-card p{ font-size:13px; color:var(--ink-soft); line-height:1.75; margin:0; }
+
+  .faq{ max-width:820px; }
+  .faq details{ border-bottom:1px solid var(--line-strong); padding:18px 4px; }
+  .faq summary{ cursor:pointer; font-size:14px; font-weight:700; list-style:none; display:flex; justify-content:space-between; align-items:center; }
+  .faq summary::-webkit-details-marker{ display:none; }
+  .faq summary::after{ content:'+'; color:var(--accent); font-size:18px; font-weight:700; }
+  .faq details[open] summary::after{ content:'−'; }
+  .faq p{ font-size:13.5px; color:var(--ink-soft); line-height:1.8; margin:12px 0 0; max-width:65ch; }
 
   footer{ padding:26px 6vw; border-top:1px solid var(--line); }
   .footer-inner{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
-  .footer-brand{ font-weight:700; font-size:13px; }
+  .footer-brand{ font-weight:800; font-size:13px; }
   .footer-links{ font-size:12.5px; color:var(--ink-soft); display:flex; align-items:center; gap:8px; }
   .footer-links a{ color:var(--ink-soft); text-decoration:none; }
-  .footer-links a:hover{ color:var(--gold); }
-  .footer-dot{ opacity:.5; }
+  .footer-links a:hover{ color:var(--accent); }
 
-  /* ---------- MODAL ---------- */
-  .overlay{
-    position:fixed; inset:0; background:rgba(22,35,63,0.55); backdrop-filter:blur(3px);
-    display:none; align-items:center; justify-content:center; z-index:50; padding:20px;
-  }
+  .overlay{ position:fixed; inset:0; background:rgba(36,28,20,0.5); backdrop-filter:blur(3px); display:none; align-items:center; justify-content:center; z-index:50; padding:20px; }
   .overlay.show{ display:flex; }
-  .modal{
-    background:#fff; border-radius:16px; width:min(420px,100%); overflow:hidden;
-    box-shadow:0 30px 60px rgba(22,35,63,0.3);
-  }
+  .modal{ background:var(--card); border-radius:14px; width:min(420px,100%); overflow:hidden; box-shadow:0 30px 60px rgba(36,28,20,0.25); }
   .modal-head{ padding:20px 24px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center;}
   .modal-head h3{ margin:0; font-size:16px; }
   .modal-close{ background:none; border:none; font-size:18px; cursor:pointer; color:var(--ink-soft); }
   .modal-body{ padding:24px; }
-  .modal-body label{ display:block; font-size:12.5px; font-weight:600; margin:14px 0 6px; }
-  .modal-body input{
-    width:100%; padding:11px 13px; border:1px solid var(--line); border-radius:8px; font-size:14px; font-family:inherit;
-  }
-  .modal-summary{ background:var(--paper-dim); border-radius:10px; padding:14px 16px; margin-bottom:6px; }
+  .modal-body label{ display:block; font-size:12.5px; font-weight:700; margin:14px 0 6px; }
+  .modal-body input{ width:100%; padding:11px 13px; border:1px solid var(--line); border-radius:8px; font-size:14px; font-family:inherit; }
+  .modal-summary{ background:var(--paper-dim); border-radius:10px; padding:14px 16px; }
   .modal-summary .row{ display:flex; justify-content:space-between; font-size:13px; padding:3px 0; color:var(--ink-soft);}
   .modal-summary .row.total{ color:var(--ink); font-weight:700; font-size:15px; border-top:1px solid var(--line); margin-top:6px; padding-top:10px;}
   .modal-footer{ padding:0 24px 24px; }
   .full-btn{ width:100%; }
-  .result{ text-align:center; padding:10px 0 4px; }
-  .result .check{
-    width:52px; height:52px; border-radius:50%; background:var(--teal); color:#fff; display:flex;
-    align-items:center; justify-content:center; margin:0 auto 16px; font-size:24px;
-  }
-  .qr-real{
-    width:150px; height:150px; margin:0 auto 14px; border-radius:10px;
-    background:
-      repeating-linear-gradient(90deg, var(--ink) 0 7px, transparent 7px 14px),
-      repeating-linear-gradient(0deg, var(--ink) 0 7px, transparent 7px 14px);
-    background-blend-mode:multiply; background-color:#fff; border:1px solid var(--line);
-  }
-  .lpa-code{
-    font-family:var(--mono); font-size:11px; background:var(--paper-dim); padding:10px 12px; border-radius:8px;
-    word-break:break-all; color:var(--ink-soft);
-  }
-  @media(max-width:860px){
+
+  @media (max-width:880px){
     .hero{ grid-template-columns:1fr; }
-    .trust-grid{ grid-template-columns:1fr; }
+    .stub-preview{ order:-1; }
+    .compat-inner{ grid-template-columns:1fr; }
+    .how-grid{ grid-template-columns:1fr; gap:26px; }
+    .guarantee-grid{ grid-template-columns:1fr; }
+    .field-row{ grid-template-columns:1fr; }
+    nav{ display:none; }
   }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="logo">
-    <div class="logo-mark"></div>
-    <div class="logo-text">連線登機證 <span>· eSIM</span></div>
-  </div>
+  <div class="brand"><div class="brand-mark"></div>連線登機證 · eSIM</div>
   <nav>
+    <a href="#compat">手機相容性</a>
     <a href="#shop">選購方案</a>
+    <a href="#how">使用方式</a>
+    <a href="#faq">常見問題</a>
+    <a href="#shop" class="nav-cta">立即選購</a>
   </nav>
 </header>
 
 <section class="hero">
   <div>
     <div class="eyebrow">日本 · 韓國 · 東南亞</div>
-    <h1>你的旅程，<em>一張連線登機證</em>解決</h1>
-    <p>選方案、付款、掃碼開通，三步驟搞定出國上網。付款完成後最快 30 秒收到可用的 eSIM，QR Code 同步寄到你的信箱，隨時找得回來。</p>
+    <h1>出國上網,<span class="accent">掃碼即用</span></h1>
+    <p>不用臨櫃辦卡,不用等實體 SIM 寄送。線上選好流量與天數、完成付款,QR Code 最快 30 秒內寄到信箱,抵達當地就能立刻連上網路。</p>
     <div class="hero-actions">
-      <button class="btn btn-primary" onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'})">瀏覽方案</button>
+      <button class="btn btn-primary" onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'})">選購方案</button>
+      <button class="btn btn-ghost" onclick="document.getElementById('compat').scrollIntoView({behavior:'smooth'})">我的手機能用嗎?</button>
     </div>
   </div>
   <div class="stub-preview">
@@ -252,168 +214,216 @@
   </div>
 </section>
 
-<section class="shop" id="shop">
-  <div class="shop-head">
-    <h2>選擇你的目的地方案</h2>
-    <div class="tabs">
-      <button class="tab active" data-region="jp">🇯🇵 日本</button>
-      <button class="tab" data-region="kr">🇰🇷 韓國</button>
-      <button class="tab" data-region="sea">🌏 東南亞</button>
-    </div>
-  </div>
-  <div class="grid" id="planGrid"></div>
+<section class="stats">
+  <div class="stat-item"><div class="num">30 秒</div><div class="lbl">平均出票時間</div></div>
+  <div class="stat-item"><div class="num">全信箱</div><div class="lbl">QR Code 交付</div></div>
+  <div class="stat-item"><div class="num">7 天</div><div class="lbl">未啟用安心退款</div></div>
 </section>
 
-<section class="trust" id="trust">
-  <div class="trust-grid">
-    <div class="trust-item">
-      <div class="trust-num">30 秒</div>
-      <div class="trust-lbl">付款完成後平均出票時間</div>
+<section class="compat" id="compat">
+  <div class="compat-inner">
+    <div>
+      <h2>下單前,先確認手機支援 eSIM</h2>
+      <p>這是最容易被忽略、卻最重要的第一步 —— 手機不支援的話,方案是無法安裝使用的。</p>
     </div>
-    <div class="trust-item">
-      <div class="trust-num">24 小時</div>
-      <div class="trust-lbl">客服信箱回覆</div>
+    <div class="compat-list">
+      <div class="compat-row"><span class="check">✓</span><div><strong>iPhone</strong><span>XS / XR 及以後機型皆支援(需為原廠未鎖區版本)</span></div></div>
+      <div class="compat-row"><span class="check">✓</span><div><strong>Samsung</strong><span>Galaxy S20 系列及以後多數旗艦機型支援</span></div></div>
+      <div class="compat-row"><span class="check">✓</span><div><strong>Google Pixel</strong><span>Pixel 3 及以後機型支援</span></div></div>
+      <div class="compat-row"><span class="check">✓</span><div><strong>如何確認</strong><span>手機設定 → 行動網路 → 若看到「新增 eSIM／行動方案」選項即代表支援</span></div></div>
     </div>
-    <div class="trust-item">
-      <div class="trust-num">7 天</div>
-      <div class="trust-lbl">未啟用可申請退款</div>
-    </div>
+  </div>
+</section>
+
+<section class="shop" id="shop">
+  <div class="shop-head">
+    <h2>選擇你的目的地</h2>
+    <p>挑地區,再依旅程天數與流量需求自由搭配,價格會即時計算。</p>
+  </div>
+  <div class="tabs" id="tabs"></div>
+  <div class="configurator" id="configurator"></div>
+</section>
+
+<section class="how" id="how">
+  <div class="how-head">
+    <h2>買了之後,怎麼開始用?</h2>
+    <p>安裝可以提前做,但正式啟用建議留到抵達當地再開,避免流量天數提前開始計算。</p>
+  </div>
+  <div class="how-grid">
+    <div class="how-step"><div class="how-line"></div><div class="idx">01</div><h4>出發前先掃碼安裝</h4><p>收到信件後隨時可以安裝,安裝當下不會開始計算天數與流量。</p></div>
+    <div class="how-step"><div class="how-line"></div><div class="idx">02</div><h4>抵達當地再開啟數據漫遊</h4><p>飛機落地、手機收到當地訊號後,再開啟這張 eSIM 的數據漫遊,天數才會開始倒數。</p></div>
+    <div class="how-step"><div class="how-line"></div><div class="idx">03</div><h4>原本門號不受影響</h4><p>手機可雙卡雙待,原本的實體 SIM 卡照常收發電話與簡訊,eSIM 只負責上網。</p></div>
+  </div>
+</section>
+
+<section class="guarantee">
+  <div class="guarantee-head">
+    <h2>萬一發生狀況,怎麼辦?</h2>
+    <p>出國在外最怕的就是「卡住」,這裡列出最常遇到的三種狀況與處理方式。</p>
+  </div>
+  <div class="guarantee-grid">
+    <div class="g-card"><h4>流量提前用完</h4><p>回到選購頁面直接加購新方案即可,新的 QR Code 幾秒內寄達,不影響原本設定。</p></div>
+    <div class="g-card"><h4>收不到訊號</h4><p>先確認手機的數據漫遊與 APN 設定是否正確;仍無法排除的話,來信客服,平均 24 小時內回覆協助處理。</p></div>
+    <div class="g-card"><h4>想申請退款</h4><p>只要 eSIM 尚未啟用數據漫遊,購買後 7 天內都可以來信申請全額退款。</p></div>
+  </div>
+
+  <div class="faq" id="faq">
+    <details><summary>我的手機支援 eSIM 嗎?</summary><p>可以先參考上方「手機相容性」區塊,或直接到手機設定裡的行動網路頁面確認是否有新增 eSIM 的選項。</p></details>
+    <details><summary>需要多久前安裝?</summary><p>沒有限制,出發前隨時可以先掃碼安裝完成,只要記得抵達當地後才開啟數據漫遊,避免流量天數提前開始計算。</p></details>
+    <details><summary>可以跟原本的 SIM 卡同時使用嗎?</summary><p>可以,多數支援 eSIM 的手機都能雙卡雙待,原本門號可繼續通話與收簡訊,新裝的 eSIM 專門負責上網。</p></details>
+    <details><summary>方案涵蓋哪些電信商網路?</summary><p>方案涵蓋當地主要電信商的 4G/5G 網路,實際連接的電信商會依所在地區自動選擇訊號最佳者。</p></details>
   </div>
 </section>
 
 <footer>
   <div class="footer-inner">
-    <div class="footer-brand">連線登機證 <span style="color:var(--teal)">· eSIM</span></div>
-    <div class="footer-links">
-      <a href="mailto:support@yourshop.example">客服信箱</a>
-      <span class="footer-dot">·</span>
-      <span>© 2026 連線登機證</span>
-    </div>
+    <div class="footer-brand">連線登機證 · eSIM</div>
+    <div class="footer-links"><a href="mailto:support@yourshop.example">客服信箱</a><span>·</span><span>© 2026 隨行</span></div>
   </div>
 </footer>
 
-<!-- ORDER MODAL -->
 <div class="overlay" id="overlay">
   <div class="modal">
-    <div class="modal-head">
-      <h3 id="modalTitle">確認訂單</h3>
-      <button class="modal-close" onclick="closeModal()">✕</button>
-    </div>
+    <div class="modal-head"><h3 id="modalTitle">確認訂單</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
     <div class="modal-body" id="modalBody"></div>
     <div class="modal-footer" id="modalFooter"></div>
   </div>
 </div>
 
 <script>
-const PLANS = {
-  jp: [
-    {id:'jp_5gb_8d', flag:'🇯🇵', name:'日本標準流量', provider:'eSIM Access 批發', gb:'5GB', days:'8天', price:180},
-    {id:'jp_10gb_30d', flag:'🇯🇵', name:'日本長天期', provider:'eSIM Access 批發', gb:'10GB', days:'30天', price:390},
-    {id:'jp_unlimited_15d', flag:'🇯🇵', name:'日本吃到飽', provider:'eSIM Go 批發', gb:'不限量(FUP 2GB/日)', days:'15天', price:450},
-  ],
-  kr: [
-    {id:'kr_5gb_8d', flag:'🇰🇷', name:'韓國標準流量', provider:'eSIM Access 批發', gb:'5GB', days:'8天', price:170},
-    {id:'kr_10gb_20d', flag:'🇰🇷', name:'韓國長天期', provider:'eSIM Go 批發', gb:'10GB', days:'20天', price:360},
-    {id:'kr_unlimited_10d', flag:'🇰🇷', name:'韓國吃到飽', provider:'eSIM Access 批發', gb:'不限量(FUP 1.5GB/日)', days:'10天', price:400},
-  ],
-  sea: [
-    {id:'sea_10gb_30d', flag:'🌏', name:'東南亞多國通用', provider:'eSIM Go 批發', gb:'10GB', days:'30天', price:420},
-    {id:'th_5gb_15d', flag:'🇹🇭', name:'泰國單國流量', provider:'eSIM Access 批發', gb:'5GB', days:'15天', price:220},
-    {id:'vn_5gb_15d', flag:'🇻🇳', name:'越南單國流量', provider:'eSIM Access 批發', gb:'5GB', days:'15天', price:210},
-  ],
+const REGIONS = {
+  jp: { label:'日本', flag:'🇯🇵', desc:'涵蓋日本全境 4G/5G 網路,適合各種天數的商務或觀光行程。', rate:{perGB:32, perDay:7, base:30} },
+  kr: { label:'韓國', flag:'🇰🇷', desc:'涵蓋首爾、釜山等主要城市網路,適合短、中、長天期各種行程。', rate:{perGB:30, perDay:6, base:28} },
+  sea:{
+    label:'東南亞', flag:'🌏', multiCountry:true,
+    countries:{
+      th:{ label:'泰國', flag:'🇹🇭', desc:'涵蓋曼谷、清邁、普吉島等地網路。', rate:{perGB:28, perDay:6, base:25} },
+      vn:{ label:'越南', flag:'🇻🇳', desc:'涵蓋河內、胡志明市等主要城市網路。', rate:{perGB:27, perDay:6, base:25} },
+      my:{ label:'馬來西亞', flag:'🇲🇾', desc:'涵蓋吉隆坡、檳城等主要城市網路。', rate:{perGB:29, perDay:7, base:28} },
+      sg:{ label:'新加坡', flag:'🇸🇬', desc:'涵蓋新加坡全境高速網路,適合短天數商務或轉機停留。', rate:{perGB:34, perDay:8, base:30} },
+      multi:{ label:'多國通用', flag:'🌏', desc:'一張 eSIM 跨越泰國、越南、馬來西亞、新加坡等多國,適合跨國行程。', rate:{perGB:30, perDay:7, base:35} },
+    }
+  }
 };
 
-const grid = document.getElementById('planGrid');
-function renderPlans(region){
-  grid.innerHTML = '';
-  PLANS[region].forEach(p=>{
-    const el = document.createElement('div');
-    el.className = 'ticket';
-    el.innerHTML = `
-      <div class="ticket-top">
-        <span class="flag">${p.flag}</span>
-        <h3>${p.name}</h3>
-        <div class="provider">${p.provider}</div>
-      </div>
-      <div class="ticket-mid">
-        <div class="stat"><div class="num">${p.gb}</div><div class="lbl">流量</div></div>
-        <div class="stat"><div class="num">${p.days}</div><div class="lbl">效期</div></div>
-      </div>
-      <div class="tperf"></div>
-      <div class="ticket-bottom">
-        <div class="price">NT$${p.price}<span> /張</span></div>
-        <button class="buy-btn">立即購買</button>
-      </div>
-    `;
-    el.querySelector('.buy-btn').onclick = ()=>openOrder(p);
-    grid.appendChild(el);
-  });
-}
-renderPlans('jp');
+const GB_OPTIONS = ['1','3','5','10','20','unlimited'];
+const DAY_OPTIONS = ['3','5','8','15','30'];
+const gbLabel = v => v==='unlimited' ? '不限量(降速)' : v+'GB';
 
-document.querySelectorAll('.tab').forEach(t=>{
-  t.onclick = ()=>{
+function priceFor(rate, gb, days){
+  days = Number(days);
+  if(gb==='unlimited'){
+    return Math.round((rate.perDay*3.3*days + rate.base*1.3)/10)*10;
+  }
+  return Math.round((rate.perGB*Number(gb) + rate.perDay*days + rate.base)/10)*10;
+}
+
+let currentRegion = 'jp';
+let currentCountry = 'th';
+let currentGB = '5';
+let currentDays = '5';
+
+const tabsWrap = document.getElementById('tabs');
+Object.keys(REGIONS).forEach((key,i)=>{
+  const r = REGIONS[key];
+  const btn = document.createElement('button');
+  btn.className = 'tab' + (i===0 ? ' active' : '');
+  btn.innerHTML = `<span class="flag">${r.flag}</span><span>${r.label}</span>`;
+  btn.onclick = ()=>{
     document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-    t.classList.add('active');
-    renderPlans(t.dataset.region);
+    btn.classList.add('active');
+    currentRegion = key;
+    if(REGIONS[key].multiCountry) currentCountry = Object.keys(REGIONS[key].countries)[0];
+    renderConfigurator();
   };
+  tabsWrap.appendChild(btn);
 });
 
-// ---- Modal / mock checkout flow ----
+function activeData(){
+  const r = REGIONS[currentRegion];
+  if(r.multiCountry) return { ...r.countries[currentCountry], parentLabel:r.label, parentFlag:r.flag };
+  return { ...r, parentLabel:r.label, parentFlag:r.flag };
+}
+
+function renderConfigurator(){
+  const data = activeData();
+  const r = REGIONS[currentRegion];
+  const price = priceFor(data.rate, currentGB, currentDays);
+  const el = document.getElementById('configurator');
+
+  let countrySelectHTML = '';
+  if(r.multiCountry){
+    countrySelectHTML = `
+      <div class="field-row single">
+        <div class="field">
+          <label>選擇國家</label>
+          <div class="select-wrap">
+            <select id="countrySelect">
+              ${Object.keys(r.countries).map(k=>`<option value="${k}" ${k===currentCountry?'selected':''}>${r.countries[k].flag} ${r.countries[k].label}</option>`).join('')}
+            </select>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  el.innerHTML = `
+    <div class="config-region-label"><span class="flag">${data.flag}</span>${data.parentLabel}${r.multiCountry ? ' · '+data.label : ''}</div>
+    <h3>${data.label} eSIM 方案</h3>
+    <div class="config-desc">${data.desc}</div>
+    ${countrySelectHTML}
+    <div class="field-row">
+      <div class="field">
+        <label>流量</label>
+        <div class="select-wrap">
+          <select id="gbSelect">${GB_OPTIONS.map(g=>`<option value="${g}" ${g===currentGB?'selected':''}>${gbLabel(g)}</option>`).join('')}</select>
+        </div>
+      </div>
+      <div class="field">
+        <label>天數</label>
+        <div class="select-wrap">
+          <select id="daySelect">${DAY_OPTIONS.map(d=>`<option value="${d}" ${d===currentDays?'selected':''}>${d} 天</option>`).join('')}</select>
+        </div>
+      </div>
+    </div>
+    <div class="config-divider"></div>
+    <div class="config-bottom">
+      <div class="price">NT$${price}<span>/張</span></div>
+      <button class="buy-btn" id="configBuyBtn">加入訂單</button>
+    </div>
+  `;
+
+  if(r.multiCountry){
+    document.getElementById('countrySelect').onchange = e=>{ currentCountry = e.target.value; renderConfigurator(); };
+  }
+  document.getElementById('gbSelect').onchange = e=>{ currentGB = e.target.value; renderConfigurator(); };
+  document.getElementById('daySelect').onchange = e=>{ currentDays = e.target.value; renderConfigurator(); };
+  document.getElementById('configBuyBtn').onclick = ()=>openOrder(data, price);
+}
+renderConfigurator();
+
 const overlay = document.getElementById('overlay');
 const modalTitle = document.getElementById('modalTitle');
 const modalBody = document.getElementById('modalBody');
 const modalFooter = document.getElementById('modalFooter');
 
-function openOrder(plan){
+function openOrder(data, price){
   modalTitle.textContent = '確認訂單';
   modalBody.innerHTML = `
     <div class="modal-summary">
-      <div class="row"><span>${plan.flag} ${plan.name}</span><span>${plan.gb} / ${plan.days}</span></div>
-      <div class="row total"><span>應付金額</span><span>NT$${plan.price}</span></div>
+      <div class="row"><span>${data.flag} ${data.parentLabel}${REGIONS[currentRegion].multiCountry ? ' · '+data.label : ''}</span><span>${gbLabel(currentGB)} / ${currentDays}天</span></div>
+      <div class="row total"><span>應付金額</span><span>NT$${price}</span></div>
     </div>
-    <label>Email（用於接收訂單確認信與 QR Code）</label>
+    <label>Email(用於接收訂單確認信與 QR Code)</label>
     <input type="email" id="orderEmail" placeholder="you@example.com">
   `;
   modalFooter.innerHTML = `<button class="btn btn-primary full-btn" id="payBtn">前往付款</button>`;
-  document.getElementById('payBtn').onclick = ()=>payNow(plan);
+  document.getElementById('payBtn').onclick = ()=>{
+    modalTitle.textContent = '預覽模式';
+    modalBody.innerHTML = `<div style="text-align:center;padding:30px 0;color:var(--ink-soft);font-size:13px;">這是設計預覽,尚未連接付款流程。</div>`;
+    modalFooter.innerHTML = '';
+  };
   overlay.classList.add('show');
 }
-
-async function payNow(plan){
-  const emailInput = document.getElementById('orderEmail');
-  const email = (emailInput && emailInput.value || '').trim();
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
-    alert('請輸入正確的 Email');
-    return;
-  }
-  modalTitle.textContent = '處理中';
-  modalBody.innerHTML = `<div style="text-align:center;padding:30px 0;color:var(--ink-soft);font-size:13px;">
-    建立訂單中，即將前往付款頁面…</div>`;
-  modalFooter.innerHTML = '';
-  try{
-    const res = await fetch('/api/checkout', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ planId: plan.id, email }),
-    });
-    if(!res.ok){
-      const err = await res.json().catch(()=>({error:'訂單建立失敗，請稍後再試'}));
-      throw new Error(err.error || '訂單建立失敗，請稍後再試');
-    }
-    // /api/checkout returns an auto-submitting HTML form that posts straight
-    // to ECPay - replace the whole page with it so the browser follows through.
-    const html = await res.text();
-    document.open();
-    document.write(html);
-    document.close();
-  }catch(err){
-    modalTitle.textContent = '訂單建立失敗';
-    modalBody.innerHTML = `<div style="text-align:center;padding:20px 0;color:var(--red);font-size:13px;">${err.message}</div>`;
-    modalFooter.innerHTML = `<button class="btn btn-ghost full-btn" onclick="closeModal()">關閉</button>`;
-  }
-}
-
 function closeModal(){ overlay.classList.remove('show'); }
 overlay.onclick = (e)=>{ if(e.target===overlay) closeModal(); };
 </script>
