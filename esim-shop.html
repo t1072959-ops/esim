@@ -109,6 +109,17 @@
   select{ appearance:none; -webkit-appearance:none; width:100%; padding:13px 36px 13px 14px; border:1.5px solid var(--line-strong); border-radius:8px; font-size:14px; font-family:var(--sans); font-weight:600; color:var(--ink); background:var(--paper-dim); cursor:pointer; }
   select:focus{ outline:2px solid var(--accent); outline-offset:1px; }
 
+  .plan-list{ display:flex; flex-direction:column; gap:10px; margin-bottom:22px; }
+  .plan-card{ display:flex; justify-content:space-between; align-items:center; gap:14px; padding:14px 16px; border:1.5px solid var(--line-strong); border-radius:10px; cursor:pointer; background:var(--paper-dim); transition:all .15s ease; }
+  .plan-card:hover{ border-color:var(--ink); }
+  .plan-card.active{ border-color:var(--accent); background:#fff; box-shadow:0 0 0 1.5px var(--accent) inset; }
+  .plan-card .plan-info{ display:flex; flex-direction:column; gap:3px; }
+  .plan-card .plan-spec{ font-weight:700; font-size:14px; }
+  .plan-card .plan-name{ font-size:12px; color:var(--ink-soft); }
+  .plan-card .plan-price{ font-weight:800; font-size:16px; white-space:nowrap; }
+  .plan-card .plan-price span{ font-size:11px; color:var(--ink-faint); font-weight:500; }
+  .plan-loading{ color:var(--ink-faint); font-size:13px; padding:10px 0; }
+
   .config-divider{ border-top:1px solid var(--line); margin:0 0 22px; }
   .config-bottom{ display:flex; justify-content:space-between; align-items:center; }
   .price{ font-size:26px; font-weight:800; color:var(--ink); }
@@ -290,137 +301,138 @@
   </div>
 </div>
 
-<script>
-const REGIONS = {
-  jp: { label:'日本', flag:'🇯🇵', desc:'涵蓋日本全境 4G/5G 網路,適合各種天數的商務或觀光行程。', rate:{perGB:32, perDay:7, base:30} },
-  kr: { label:'韓國', flag:'🇰🇷', desc:'涵蓋首爾、釜山等主要城市網路,適合短、中、長天期各種行程。', rate:{perGB:30, perDay:6, base:28} },
-  sea:{
-    label:'東南亞', flag:'🌏', multiCountry:true,
-    countries:{
-      th:{ label:'泰國', flag:'🇹🇭', desc:'涵蓋曼谷、清邁、普吉島等地網路。', rate:{perGB:28, perDay:6, base:25} },
-      vn:{ label:'越南', flag:'🇻🇳', desc:'涵蓋河內、胡志明市等主要城市網路。', rate:{perGB:27, perDay:6, base:25} },
-      my:{ label:'馬來西亞', flag:'🇲🇾', desc:'涵蓋吉隆坡、檳城等主要城市網路。', rate:{perGB:29, perDay:7, base:28} },
-      sg:{ label:'新加坡', flag:'🇸🇬', desc:'涵蓋新加坡全境高速網路,適合短天數商務或轉機停留。', rate:{perGB:34, perDay:8, base:30} },
-      multi:{ label:'多國通用', flag:'🌏', desc:'一張 eSIM 跨越泰國、越南、馬來西亞、新加坡等多國,適合跨國行程。', rate:{perGB:30, perDay:7, base:35} },
-    }
-  }
-};
+<!-- Real checkout: submitting this form navigates the browser to POST /api/checkout,
+     whose response is an auto-submitting HTML form that forwards straight to ECPay. -->
+<form id="checkoutForm" method="POST" action="/api/checkout" style="display:none;">
+  <input type="hidden" name="planId" id="checkoutPlanId">
+  <input type="hidden" name="email" id="checkoutEmail">
+</form>
 
-const GB_OPTIONS = ['1','3','5','10','20','unlimited'];
-const DAY_OPTIONS = ['3','5','8','15','30'];
+<script>
+const REGION_META = {
+  jp:  { label:'日本', flag:'🇯🇵', desc:'涵蓋日本全境 4G/5G 網路,適合各種天數的商務或觀光行程。' },
+  kr:  { label:'韓國', flag:'🇰🇷', desc:'涵蓋首爾、釜山等主要城市網路,適合短、中、長天期各種行程。' },
+  sea: { label:'東南亞', flag:'🌏', desc:'涵蓋泰國、越南等單國方案,以及跨國通用方案,適合跨國行程。' },
+};
+const REGION_ORDER = ['jp','kr','sea'];
 const gbLabel = v => v==='unlimited' ? '不限量(降速)' : v+'GB';
 
-function priceFor(rate, gb, days){
-  days = Number(days);
-  if(gb==='unlimited'){
-    return Math.round((rate.perDay*3.3*days + rate.base*1.3)/10)*10;
-  }
-  return Math.round((rate.perGB*Number(gb) + rate.perDay*days + rate.base)/10)*10;
-}
-
+let ALL_PLANS = [];
 let currentRegion = 'jp';
-let currentCountry = 'th';
-let currentGB = '5';
-let currentDays = '5';
+let currentPlanId = null;
 
 const tabsWrap = document.getElementById('tabs');
-Object.keys(REGIONS).forEach((key,i)=>{
-  const r = REGIONS[key];
-  const btn = document.createElement('button');
-  btn.className = 'tab' + (i===0 ? ' active' : '');
-  btn.innerHTML = `<span class="flag">${r.flag}</span><span>${r.label}</span>`;
-  btn.onclick = ()=>{
-    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-    btn.classList.add('active');
-    currentRegion = key;
-    if(REGIONS[key].multiCountry) currentCountry = Object.keys(REGIONS[key].countries)[0];
-    renderConfigurator();
-  };
-  tabsWrap.appendChild(btn);
-});
+const configuratorEl = document.getElementById('configurator');
 
-function activeData(){
-  const r = REGIONS[currentRegion];
-  if(r.multiCountry) return { ...r.countries[currentCountry], parentLabel:r.label, parentFlag:r.flag };
-  return { ...r, parentLabel:r.label, parentFlag:r.flag };
+function renderTabs(){
+  tabsWrap.innerHTML = '';
+  REGION_ORDER.filter(r => ALL_PLANS.some(p => p.region === r)).forEach((key, i) => {
+    const r = REGION_META[key];
+    const btn = document.createElement('button');
+    btn.className = 'tab' + (key === currentRegion ? ' active' : '');
+    btn.innerHTML = `<span class="flag">${r.flag}</span><span>${r.label}</span>`;
+    btn.onclick = () => {
+      currentRegion = key;
+      const firstPlan = ALL_PLANS.find(p => p.region === key);
+      currentPlanId = firstPlan ? firstPlan.planId : null;
+      renderTabs();
+      renderConfigurator();
+    };
+    tabsWrap.appendChild(btn);
+  });
 }
 
 function renderConfigurator(){
-  const data = activeData();
-  const r = REGIONS[currentRegion];
-  const price = priceFor(data.rate, currentGB, currentDays);
-  const el = document.getElementById('configurator');
-
-  let countrySelectHTML = '';
-  if(r.multiCountry){
-    countrySelectHTML = `
-      <div class="field-row single">
-        <div class="field">
-          <label>選擇國家</label>
-          <div class="select-wrap">
-            <select id="countrySelect">
-              ${Object.keys(r.countries).map(k=>`<option value="${k}" ${k===currentCountry?'selected':''}>${r.countries[k].flag} ${r.countries[k].label}</option>`).join('')}
-            </select>
-          </div>
-        </div>
-      </div>`;
+  const meta = REGION_META[currentRegion];
+  const plans = ALL_PLANS.filter(p => p.region === currentRegion);
+  if (!currentPlanId || !plans.some(p => p.planId === currentPlanId)) {
+    currentPlanId = plans[0] ? plans[0].planId : null;
   }
+  const selected = plans.find(p => p.planId === currentPlanId);
 
-  el.innerHTML = `
-    <div class="config-region-label"><span class="flag">${data.flag}</span>${data.parentLabel}${r.multiCountry ? ' · '+data.label : ''}</div>
-    <h3>${data.label} eSIM 方案</h3>
-    <div class="config-desc">${data.desc}</div>
-    ${countrySelectHTML}
-    <div class="field-row">
-      <div class="field">
-        <label>流量</label>
-        <div class="select-wrap">
-          <select id="gbSelect">${GB_OPTIONS.map(g=>`<option value="${g}" ${g===currentGB?'selected':''}>${gbLabel(g)}</option>`).join('')}</select>
-        </div>
-      </div>
-      <div class="field">
-        <label>天數</label>
-        <div class="select-wrap">
-          <select id="daySelect">${DAY_OPTIONS.map(d=>`<option value="${d}" ${d===currentDays?'selected':''}>${d} 天</option>`).join('')}</select>
-        </div>
-      </div>
+  configuratorEl.innerHTML = `
+    <div class="config-region-label"><span class="flag">${meta.flag}</span>${meta.label}</div>
+    <h3>${meta.label} eSIM 方案</h3>
+    <div class="config-desc">${meta.desc}</div>
+    <div class="plan-list" id="planList">
+      ${plans.map(p => `
+        <div class="plan-card${p.planId===currentPlanId?' active':''}" data-plan-id="${p.planId}">
+          <div class="plan-info">
+            <div class="plan-spec">${p.flag} ${gbLabel(p.gb)} · ${p.days} 天</div>
+            <div class="plan-name">${p.name}</div>
+          </div>
+          <div class="plan-price">NT$${p.priceTwd}<span>/張</span></div>
+        </div>`).join('')}
     </div>
     <div class="config-divider"></div>
     <div class="config-bottom">
-      <div class="price">NT$${price}<span>/張</span></div>
+      <div class="price">NT$${selected ? selected.priceTwd : '—'}<span>/張</span></div>
       <button class="buy-btn" id="configBuyBtn">加入訂單</button>
     </div>
   `;
 
-  if(r.multiCountry){
-    document.getElementById('countrySelect').onchange = e=>{ currentCountry = e.target.value; renderConfigurator(); };
-  }
-  document.getElementById('gbSelect').onchange = e=>{ currentGB = e.target.value; renderConfigurator(); };
-  document.getElementById('daySelect').onchange = e=>{ currentDays = e.target.value; renderConfigurator(); };
-  document.getElementById('configBuyBtn').onclick = ()=>openOrder(data, price);
+  configuratorEl.querySelectorAll('.plan-card').forEach(card => {
+    card.onclick = () => { currentPlanId = card.dataset.planId; renderConfigurator(); };
+  });
+  document.getElementById('configBuyBtn').onclick = () => {
+    const plan = ALL_PLANS.find(p => p.planId === currentPlanId);
+    if (plan) openOrder(plan);
+  };
 }
-renderConfigurator();
+
+async function loadPlans(){
+  configuratorEl.innerHTML = '<div class="plan-loading">正在載入方案…</div>';
+  try {
+    const res = await fetch('/api/plans');
+    const data = await res.json();
+    ALL_PLANS = data.plans || [];
+    currentRegion = ALL_PLANS[0] ? ALL_PLANS[0].region : 'jp';
+    currentPlanId = ALL_PLANS[0] ? ALL_PLANS[0].planId : null;
+    renderTabs();
+    renderConfigurator();
+  } catch (e) {
+    configuratorEl.innerHTML = '<div class="plan-loading">方案載入失敗,請重新整理頁面再試一次。</div>';
+  }
+}
+loadPlans();
 
 const overlay = document.getElementById('overlay');
 const modalTitle = document.getElementById('modalTitle');
 const modalBody = document.getElementById('modalBody');
 const modalFooter = document.getElementById('modalFooter');
 
-function openOrder(data, price){
+function openOrder(plan){
   modalTitle.textContent = '確認訂單';
   modalBody.innerHTML = `
     <div class="modal-summary">
-      <div class="row"><span>${data.flag} ${data.parentLabel}${REGIONS[currentRegion].multiCountry ? ' · '+data.label : ''}</span><span>${gbLabel(currentGB)} / ${currentDays}天</span></div>
-      <div class="row total"><span>應付金額</span><span>NT$${price}</span></div>
+      <div class="row"><span>${plan.flag} ${plan.regionLabel} · ${plan.name}</span><span>${gbLabel(plan.gb)} / ${plan.days}天</span></div>
+      <div class="row total"><span>應付金額</span><span>NT$${plan.priceTwd}</span></div>
     </div>
     <label>Email(用於接收訂單確認信與 QR Code)</label>
-    <input type="email" id="orderEmail" placeholder="you@example.com">
+    <input type="email" id="orderEmail" placeholder="you@example.com" required>
+    <div id="orderError" style="display:none;color:var(--accent-deep);font-size:12.5px;margin-top:8px;"></div>
   `;
   modalFooter.innerHTML = `<button class="btn btn-primary full-btn" id="payBtn">前往付款</button>`;
-  document.getElementById('payBtn').onclick = ()=>{
-    modalTitle.textContent = '預覽模式';
-    modalBody.innerHTML = `<div style="text-align:center;padding:30px 0;color:var(--ink-soft);font-size:13px;">這是設計預覽,尚未連接付款流程。</div>`;
-    modalFooter.innerHTML = '';
+  document.getElementById('payBtn').onclick = () => {
+    const emailInput = document.getElementById('orderEmail');
+    const email = emailInput.value.trim();
+    const errBox = document.getElementById('orderError');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      errBox.textContent = '請輸入正確的 Email 格式。';
+      errBox.style.display = 'block';
+      emailInput.focus();
+      return;
+    }
+    const payBtn = document.getElementById('payBtn');
+    payBtn.disabled = true;
+    payBtn.textContent = '正在前往付款頁面…';
+
+    // Real checkout: fill and submit the hidden form so the browser actually
+    // navigates to POST /api/checkout, which responds with an auto-submitting
+    // form to ECPay's payment page.
+    document.getElementById('checkoutPlanId').value = plan.planId;
+    document.getElementById('checkoutEmail').value = email;
+    document.getElementById('checkoutForm').submit();
   };
   overlay.classList.add('show');
 }
