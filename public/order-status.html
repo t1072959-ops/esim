@@ -2,48 +2,422 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
-<title>訂單狀態</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>訂單狀態｜eSIM 出貨單</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
-  body{font-family:-apple-system,'PingFang TC',sans-serif;background:#F7F5EF;color:#16233F;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;}
-  .card{background:#fff;border-radius:14px;padding:32px;max-width:360px;width:100%;box-shadow:0 10px 30px rgba(22,35,63,0.12);text-align:center;}
-  .qr{width:180px;height:180px;margin:16px auto;background:repeating-linear-gradient(90deg,#16233F 0 7px,transparent 7px 14px),repeating-linear-gradient(0deg,#16233F 0 7px,transparent 7px 14px);background-blend-mode:multiply;background-color:#fff;border-radius:8px;border:1px solid #eee;}
-  .status{font-size:14px;color:#2B3A5C;margin-top:10px;}
-  .lpa{font-family:monospace;font-size:11px;background:#EDE9DE;padding:8px;border-radius:6px;word-break:break-all;margin-top:12px;}
+  :root{
+    --paper:#F7F5EF;
+    --card:#FFFFFF;
+    --ink:#16233F;
+    --ink-soft:#5B6785;
+    --ink-faint:#98A2BC;
+    --hairline:#DAD4C3;
+    --teal:#2F6F5E;
+    --teal-bg:#E8F1EC;
+    --amber:#B8792F;
+    --amber-bg:#F7EEE0;
+    --rust:#A8422F;
+    --rust-bg:#F6E7E2;
+    --radius:20px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:32px 16px;
+    background:var(--paper);
+    background-image:
+      radial-gradient(circle at 12% 8%, rgba(22,35,63,0.05) 0, transparent 40%),
+      radial-gradient(circle at 88% 92%, rgba(47,111,94,0.06) 0, transparent 40%);
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+    color:var(--ink);
+  }
+  .mono{ font-family:"IBM Plex Mono","SFMono-Regular",Menlo,Consolas,monospace; }
+
+  .pass{
+    width:100%;
+    max-width:400px;
+    background:var(--card);
+    border-radius:var(--radius);
+    box-shadow:0 24px 60px rgba(22,35,63,0.16), 0 2px 8px rgba(22,35,63,0.08);
+    overflow:hidden;
+    position:relative;
+    animation:rise .5s cubic-bezier(.2,.7,.3,1) both;
+  }
+  @keyframes rise{ from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:translateY(0);} }
+
+  .stub{
+    padding:22px 24px 20px;
+    position:relative;
+  }
+  .eyebrow{
+    font-size:11px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  .headline{
+    font-size:21px;
+    font-weight:700;
+    line-height:1.35;
+    margin:10px 60px 4px 0;
+  }
+  .meta-row{
+    display:flex;
+    justify-content:space-between;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    margin-top:10px;
+  }
+  .meta-row .amount{ font-weight:700; color:var(--ink); }
+
+  /* rotated stamp, top-right corner of the stub */
+  .stamp{
+    position:absolute;
+    top:20px;
+    right:20px;
+    border:2px solid currentColor;
+    border-radius:8px;
+    padding:5px 9px;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.06em;
+    transform:rotate(8deg);
+    white-space:nowrap;
+  }
+  .stamp.-issued{ color:var(--teal); }
+  .stamp.-processing{ color:var(--amber); }
+  .stamp.-failed{ color:var(--rust); }
+
+  /* ticket perforation divider */
+  .tear{
+    position:relative;
+    height:0;
+    border-top:2px dashed var(--hairline);
+    margin:4px 0;
+  }
+  .tear::before,.tear::after{
+    content:"";
+    position:absolute;
+    top:-11px;
+    width:22px;
+    height:22px;
+    background:var(--paper);
+    border-radius:50%;
+  }
+  .tear::before{ left:-11px; }
+  .tear::after{ right:-11px; }
+
+  .body{ padding:22px 24px 26px; }
+
+  /* ---- loading state ---- */
+  .loading{ text-align:center; padding:30px 10px; color:var(--ink-soft); font-size:14px; }
+  .dot-pulse{ display:inline-flex; gap:5px; margin-bottom:14px; }
+  .dot-pulse span{
+    width:7px; height:7px; border-radius:50%; background:var(--ink-faint);
+    animation:pulse 1.1s ease-in-out infinite;
+  }
+  .dot-pulse span:nth-child(2){ animation-delay:.15s; }
+  .dot-pulse span:nth-child(3){ animation-delay:.3s; }
+  @keyframes pulse{ 0%,80%,100%{ opacity:.25; transform:scale(.8);} 40%{ opacity:1; transform:scale(1);} }
+
+  /* ---- processing state ---- */
+  .processing-note{
+    background:var(--amber-bg); color:var(--amber);
+    border-radius:12px; padding:14px 16px; font-size:13.5px; line-height:1.6;
+    text-align:center;
+  }
+
+  /* ---- issued state ---- */
+  .qr-wrap{
+    display:flex; justify-content:center; padding:6px 0 16px;
+  }
+  #qrcode{
+    padding:14px; background:#fff; border:1px solid var(--hairline); border-radius:14px;
+  }
+  #qrcode img{ display:block; }
+  .scan-hint{ text-align:center; font-size:12.5px; color:var(--ink-soft); margin-top:-6px; margin-bottom:18px; }
+
+  .tabs{ display:flex; gap:6px; background:var(--paper); border-radius:11px; padding:4px; margin-bottom:14px; }
+  .tab{
+    flex:1; text-align:center; padding:8px 0; font-size:13px; font-weight:600;
+    border-radius:8px; cursor:pointer; color:var(--ink-soft); user-select:none;
+  }
+  .tab.active{ background:var(--card); color:var(--ink); box-shadow:0 1px 4px rgba(22,35,63,0.12); }
+
+  .steps{ list-style:none; margin:0 0 16px; padding:0; counter-reset:step; }
+  .steps li{
+    counter-increment:step;
+    display:flex; gap:10px; align-items:flex-start;
+    font-size:13.5px; line-height:1.6; color:var(--ink); padding:7px 0;
+  }
+  .steps li::before{
+    content:counter(step);
+    flex:0 0 auto;
+    width:20px; height:20px; border-radius:50%;
+    background:var(--teal-bg); color:var(--teal);
+    font-family:"IBM Plex Mono",monospace; font-size:11px; font-weight:700;
+    display:flex; align-items:center; justify-content:center;
+    margin-top:1px;
+  }
+
+  .manual-toggle{
+    font-size:12.5px; color:var(--teal); text-align:center; cursor:pointer;
+    text-decoration:underline; text-underline-offset:3px; margin-top:2px;
+  }
+  .manual-box{
+    display:none; margin-top:12px; background:var(--paper); border-radius:10px; padding:12px 14px;
+  }
+  .manual-box.open{ display:block; }
+  .manual-row{ margin-bottom:8px; }
+  .manual-row:last-child{ margin-bottom:0; }
+  .manual-label{ font-size:11px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.06em; margin-bottom:3px; }
+  .manual-value{
+    font-size:12px; word-break:break-all; background:#fff; border:1px solid var(--hairline);
+    border-radius:7px; padding:8px 10px; display:flex; justify-content:space-between; gap:8px; align-items:center;
+  }
+  .copy-btn{
+    flex:0 0 auto; border:none; background:var(--teal); color:#fff; font-size:11px; font-weight:700;
+    padding:5px 9px; border-radius:6px; cursor:pointer; font-family:inherit;
+  }
+  .copy-btn:active{ opacity:.8; }
+
+  /* ---- failed states ---- */
+  .fail-note{
+    background:var(--rust-bg); color:var(--rust);
+    border-radius:12px; padding:16px; font-size:13.5px; line-height:1.7; text-align:center;
+  }
+  .support-box{
+    margin-top:16px; border-top:1px dashed var(--hairline); padding-top:16px; text-align:center;
+  }
+  .support-box .label{ font-size:12px; color:var(--ink-faint); margin-bottom:6px; }
+  .support-box a{
+    display:inline-block; color:var(--ink); font-weight:700; font-size:13.5px;
+    text-decoration:none; border-bottom:2px solid var(--teal);
+  }
+
+  .btn-back{
+    display:block; width:100%; margin-top:16px; padding:12px; border:none; border-radius:10px;
+    background:var(--ink); color:#fff; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit;
+  }
+
+  .test-banner{
+    background:var(--ink); color:#fff; font-size:11px; text-align:center; padding:6px;
+    letter-spacing:.04em; font-family:"IBM Plex Mono",monospace;
+  }
 </style>
 </head>
 <body>
-  <div class="card">
-    <h2>訂單狀態</h2>
-    <div id="content" class="status">查詢中...</div>
+
+  <div class="pass" id="pass" style="display:none;">
+    <div class="test-banner" id="testBanner" style="display:none;">TEST MODE — 尚未真實出貨，qrCode 為測試佔位字串</div>
+    <div class="stub">
+      <div class="eyebrow"><span>行動連線 · MOBILE DATA</span></div>
+      <div class="headline" id="planName">—</div>
+      <div class="meta-row">
+        <span class="mono" id="orderIdText">—</span>
+        <span class="amount" id="amountText">—</span>
+      </div>
+      <div class="stamp" id="stamp">—</div>
+    </div>
+
+    <div class="tear"></div>
+
+    <div class="body" id="content">
+      <div class="loading">
+        <div class="dot-pulse"><span></span><span></span><span></span></div>
+        <div>正在查詢訂單狀態…</div>
+      </div>
+    </div>
   </div>
+
 <script>
 const params = new URLSearchParams(location.search);
 const orderId = params.get('orderId');
+const pass = document.getElementById('pass');
 const content = document.getElementById('content');
+const stamp = document.getElementById('stamp');
+const testBanner = document.getElementById('testBanner');
+
+function setStub(data){
+  document.getElementById('planName').textContent = data.planName || '—';
+  document.getElementById('orderIdText').textContent = '#' + (data.orderId || orderId);
+  document.getElementById('amountText').textContent = data.amountTwd ? `NT$ ${data.amountTwd}` : '';
+}
+
+function renderStamp(kind, text){
+  stamp.className = 'stamp -' + kind;
+  stamp.textContent = text;
+}
+
+function parseLpa(raw){
+  // Standard SGP.22 format: LPA:1$smdp.address.com$ACTIVATION-CODE
+  if (typeof raw === 'string' && raw.startsWith('LPA:')) {
+    const parts = raw.split('$');
+    if (parts.length >= 3) return { address: parts[1], code: parts[2] };
+  }
+  return null;
+}
+
+function renderIssued(data){
+  renderStamp('issued', '✓ 已開通');
+  testBanner.style.display = (data.qrCode === 'TEST_MODE_NO_REAL_ESIM_ORDERED') ? 'block' : 'none';
+
+  const raw = data.qrCode || data.iccid || '';
+  const lpa = parseLpa(raw);
+
+  content.innerHTML = `
+    <div class="qr-wrap"><div id="qrcode"></div></div>
+    <div class="scan-hint">用「另一支手機」或平板掃描上方 QR Code 安裝</div>
+
+    <div class="tabs">
+      <div class="tab active" data-os="ios">iPhone</div>
+      <div class="tab" data-os="android">Android</div>
+    </div>
+    <ul class="steps" id="stepsList"></ul>
+
+    <div class="manual-toggle" id="manualToggle">機器掃不到？改用手動輸入</div>
+    <div class="manual-box" id="manualBox"></div>
+  `;
+
+  // client-side QR render (never sent to a third-party server)
+  if (raw && raw !== 'TEST_MODE_NO_REAL_ESIM_ORDERED') {
+    // eslint-disable-next-line no-undef
+    new QRCode(document.getElementById('qrcode'), {
+      text: raw, width: 200, height: 200,
+      correctLevel: QRCode.CorrectLevel.M,
+    });
+  } else {
+    document.getElementById('qrcode').innerHTML =
+      '<div style="width:200px;height:200px;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--ink-faint);text-align:center;padding:10px;">測試模式<br>尚無真實 QR 資料</div>';
+  }
+
+  const STEPS = {
+    ios: [
+      '打開「設定」App，點選「行動服務」或「行動數據」',
+      '點選「加入 eSIM」，選擇「使用 QR Code」',
+      '掃描上方的 QR Code，依畫面指示完成安裝',
+      '安裝完成後，記得到「網路名稱與流量方案」設定要用哪個門號上網',
+    ],
+    android: [
+      '打開「設定」App，進入「網路和網際網路」',
+      '點選「SIM 卡」旁的「＋」，選擇「使用 QR Code 下載」',
+      '掃描上方的 QR Code，依畫面指示完成安裝',
+      '安裝完成後，到 SIM 卡設定中開啟這張 eSIM 的行動數據',
+    ],
+  };
+
+  function renderSteps(os){
+    document.getElementById('stepsList').innerHTML =
+      STEPS[os].map(s => `<li>${s}</li>`).join('');
+  }
+  renderSteps('ios');
+
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      renderSteps(tab.dataset.os);
+    });
+  });
+
+  const manualBox = document.getElementById('manualBox');
+  if (lpa) {
+    manualBox.innerHTML = `
+      <div class="manual-row">
+        <div class="manual-label">SM-DP+ 位址</div>
+        <div class="manual-value"><span class="mono">${lpa.address}</span><button class="copy-btn" data-copy="${lpa.address}">複製</button></div>
+      </div>
+      <div class="manual-row">
+        <div class="manual-label">啟用碼</div>
+        <div class="manual-value"><span class="mono">${lpa.code}</span><button class="copy-btn" data-copy="${lpa.code}">複製</button></div>
+      </div>`;
+  } else if (raw && raw !== 'TEST_MODE_NO_REAL_ESIM_ORDERED') {
+    manualBox.innerHTML = `
+      <div class="manual-row">
+        <div class="manual-label">啟用碼</div>
+        <div class="manual-value"><span class="mono">${raw}</span><button class="copy-btn" data-copy="${raw}">複製</button></div>
+      </div>`;
+  } else {
+    manualBox.innerHTML = `<div style="font-size:12.5px;color:var(--ink-soft);">測試模式下沒有可輸入的資料。</div>`;
+  }
+
+  document.getElementById('manualToggle').addEventListener('click', () => {
+    manualBox.classList.toggle('open');
+  });
+  manualBox.addEventListener('click', (e) => {
+    if (e.target.matches('.copy-btn')) {
+      navigator.clipboard?.writeText(e.target.dataset.copy);
+      e.target.textContent = '已複製';
+      setTimeout(() => e.target.textContent = '複製', 1200);
+    }
+  });
+}
+
+function renderProcessing(data, label){
+  renderStamp('processing', label);
+  content.innerHTML = `
+    <div class="processing-note">
+      正在為你準備 eSIM，通常在幾秒到一分鐘內完成。<br>這個頁面會自動更新，請不要關閉。
+    </div>`;
+}
+
+function renderPaymentFailed(){
+  renderStamp('failed', '✕ 付款失敗');
+  content.innerHTML = `
+    <div class="fail-note">這筆付款沒有完成，可能是取消交易或銀行拒絕授權。你的訂單未被扣款，也還沒有出貨。</div>
+    <button class="btn-back" onclick="location.href='/'">回到商店重新選購</button>`;
+}
+
+function renderEsimFailed(data){
+  renderStamp('failed', '✕ 出貨異常');
+  content.innerHTML = `
+    <div class="fail-note">${data.error || '出貨時發生問題，我們已收到通知並會盡快處理。'}</div>
+    <div class="support-box">
+      <div class="label">需要協助，請聯絡客服並附上訂單編號</div>
+      <a href="mailto:support@yourshop.example?subject=訂單問題 ${data.orderId || orderId}">support@yourshop.example</a>
+    </div>`;
+}
 
 async function poll(){
   try{
     const res = await fetch(`/api/orders/${orderId}`);
-    const data = await res.json();
-    if(data.status === 'issued'){
-      content.innerHTML = `
-        <div class="qr"></div>
-        <div class="lpa">${data.qrCode || data.iccid || '(等待批發商回傳 QR)'}</div>
-        <p>掃描上方 QR Code 安裝 eSIM</p>`;
-      return; // stop polling
-    }
-    if(data.status === 'esim_order_failed'){
-      content.textContent = data.error;
+    if (res.status === 404) {
+      pass.style.display = 'block';
+      document.querySelector('.stub').style.display = 'none';
+      document.querySelector('.tear').style.display = 'none';
+      content.innerHTML = '<div class="loading">找不到這筆訂單，請確認連結是否正確。</div>';
       return;
     }
-    content.textContent = `目前狀態：${data.status}`;
+    const data = await res.json();
+    pass.style.display = 'block';
+    setStub(data);
+
+    if (data.status === 'issued') { renderIssued(data); return; }
+    if (data.status === 'esim_order_failed') { renderEsimFailed(data); return; }
+    if (data.status === 'payment_failed') { renderPaymentFailed(); return; }
+    if (data.status === 'paid') { renderProcessing(data, '● 出貨中'); setTimeout(poll, 2000); return; }
+    renderProcessing(data, '● 等待付款'); // pending_payment
     setTimeout(poll, 2000);
   }catch(e){
-    content.textContent = '查詢失敗，請重新整理頁面';
+    content.innerHTML = '<div class="loading">查詢失敗，請重新整理頁面重試。</div>';
   }
 }
-if(orderId) poll();
-else content.textContent = '缺少 orderId';
+
+if (orderId) { poll(); }
+else {
+  pass.style.display = 'block';
+  document.querySelector('.stub').style.display = 'none';
+  document.querySelector('.tear').style.display = 'none';
+  content.innerHTML = '<div class="loading">缺少訂單編號（orderId），請從購買完成的連結重新進入。</div>';
+}
 </script>
 </body>
 </html>
