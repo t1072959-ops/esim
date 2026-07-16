@@ -155,46 +155,23 @@
   }
   .buy-btn:hover{ filter:brightness(0.95); }
 
-  /* ---------- ARCH SECTION ---------- */
-  .arch{ padding:70px 6vw 90px; background:var(--ink); color:var(--paper); }
-  .arch h2{ font-size:26px; margin:0 0 8px; }
-  .arch>p{ color:rgba(247,245,239,0.65); max-width:60ch; margin-bottom:44px; }
-  .flow{ display:grid; grid-template-columns:repeat(4,1fr); gap:0; align-items:stretch; }
-  .flow-step{
-    background:rgba(247,245,239,0.05); border:1px solid rgba(247,245,239,0.14);
-    padding:22px 20px; position:relative;
+  /* ---------- TRUST BAR ---------- */
+  .trust{ padding:10px 6vw 70px; }
+  .trust-grid{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:1px;
+    background:var(--line); border:1px solid var(--line); border-radius:12px; overflow:hidden;
   }
-  .flow-step:not(:last-child){ border-right:none; }
-  .flow-step:first-child{ border-radius:10px 0 0 10px; }
-  .flow-step:last-child{ border-radius:0 10px 10px 0; }
-  .flow-num{ font-family:var(--mono); color:var(--gold); font-size:12px; margin-bottom:10px; }
-  .flow-step h4{ margin:0 0 8px; font-size:15px; }
-  .flow-step p{ margin:0; font-size:12.5px; line-height:1.6; color:rgba(247,245,239,0.6); }
-  .arrow{
-    display:flex; align-items:center; justify-content:center; color:rgba(247,245,239,0.3);
-    font-size:18px; width:0;
-  }
+  .trust-item{ background:var(--paper); padding:22px 20px; text-align:center; }
+  .trust-num{ font-family:var(--mono); font-size:24px; font-weight:800; color:var(--ink); }
+  .trust-lbl{ font-size:12.5px; color:var(--ink-soft); margin-top:4px; }
 
-  /* ---------- CODE PANEL ---------- */
-  .code-panel{
-    margin-top:40px; background:#0F1830; border-radius:12px; overflow:hidden; border:1px solid rgba(247,245,239,0.1);
-  }
-  .code-head{
-    display:flex; justify-content:space-between; align-items:center;
-    padding:12px 18px; background:rgba(247,245,239,0.04); border-bottom:1px solid rgba(247,245,239,0.08);
-  }
-  .code-head span{ font-family:var(--mono); font-size:12px; color:rgba(247,245,239,0.5); }
-  .code-tabs{ display:flex; gap:6px; }
-  .code-tab{
-    font-family:var(--mono); font-size:11.5px; padding:5px 12px; border-radius:6px; cursor:pointer;
-    color:rgba(247,245,239,0.5); background:transparent; border:1px solid transparent;
-  }
-  .code-tab.active{ background:rgba(232,163,61,0.15); color:var(--gold); border-color:rgba(232,163,61,0.3); }
-  pre{
-    margin:0; padding:20px 22px; font-family:var(--mono); font-size:12.5px; line-height:1.7;
-    color:#D8D9E0; overflow-x:auto;
-  }
-  .tok-key{ color:#7FB3FF; } .tok-str{ color:#9FE6B0; } .tok-com{ color:#6C7690; } .tok-fn{ color:var(--gold); }
+  footer{ padding:26px 6vw; border-top:1px solid var(--line); }
+  .footer-inner{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
+  .footer-brand{ font-weight:700; font-size:13px; }
+  .footer-links{ font-size:12.5px; color:var(--ink-soft); display:flex; align-items:center; gap:8px; }
+  .footer-links a{ color:var(--ink-soft); text-decoration:none; }
+  .footer-links a:hover{ color:var(--gold); }
+  .footer-dot{ opacity:.5; }
 
   /* ---------- MODAL ---------- */
   .overlay{
@@ -235,16 +212,9 @@
     font-family:var(--mono); font-size:11px; background:var(--paper-dim); padding:10px 12px; border-radius:8px;
     word-break:break-all; color:var(--ink-soft);
   }
-  .note{ font-size:12px; color:var(--ink-soft); margin-top:16px; line-height:1.6; padding:12px 14px; background:#FFF7E8; border-radius:8px; border:1px solid #F0DBAA;}
-
-  footer{ padding:30px 6vw; text-align:center; font-size:12.5px; color:var(--ink-soft); border-top:1px solid var(--line);}
-
   @media(max-width:860px){
     .hero{ grid-template-columns:1fr; }
-    .flow{ grid-template-columns:1fr; }
-    .flow-step{ border-radius:0 !important; border-right:1px solid rgba(247,245,239,0.14) !important; border-bottom:none;}
-    .flow-step:first-child{ border-radius:10px 10px 0 0 !important; }
-    .flow-step:last-child{ border-radius:0 0 10px 10px !important; }
+    .trust-grid{ grid-template-columns:1fr; }
   }
 </style>
 </head>
@@ -257,8 +227,6 @@
   </div>
   <nav>
     <a href="#shop">選購方案</a>
-    <a href="#arch">串接架構</a>
-    <a href="#code">API 範例</a>
   </nav>
 </header>
 
@@ -266,10 +234,9 @@
   <div>
     <div class="eyebrow">日本 · 韓國 · 東南亞</div>
     <h1>你的旅程，<em>一張連線登機證</em>解決</h1>
-    <p>掃描購買、掃描啟用。批發串接 eSIM Access / eSIM Go，自動下單、自動出票，客人下單後 30 秒內收到可用的數據網卡。</p>
+    <p>選方案、付款、掃碼開通，三步驟搞定出國上網。付款完成後最快 30 秒收到可用的 eSIM，QR Code 同步寄到你的信箱，隨時找得回來。</p>
     <div class="hero-actions">
       <button class="btn btn-primary" onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'})">瀏覽方案</button>
-      <button class="btn btn-ghost" onclick="document.getElementById('arch').scrollIntoView({behavior:'smooth'})">看串接架構</button>
     </div>
   </div>
   <div class="stub-preview">
@@ -278,7 +245,7 @@
     <div class="sub">10GB · 30 天 · 4G/5G</div>
     <div class="perf"></div>
     <div class="meta">
-      <div>PASSENGER<strong>HENS C.</strong></div>
+      <div>PLAN<strong>日本長天期</strong></div>
       <div>STATUS<strong style="color:var(--gold)">ACTIVE</strong></div>
       <div class="qr-mock"></div>
     </div>
@@ -297,49 +264,33 @@
   <div class="grid" id="planGrid"></div>
 </section>
 
-<section class="arch" id="arch">
-  <h2>系統怎麼串起來</h2>
-  <p>前端商店只負責選方案、收款；下單當下由後端呼叫批發商 API，取得 QR Code 後回傳給客人 —— API Key 全程不落地到瀏覽器。</p>
-  <div class="flow">
-    <div class="flow-step">
-      <div class="flow-num">01</div>
-      <h4>客人下單</h4>
-      <p>選擇國家/流量方案，填 Email，導向金流（ECPay / NewebPay）付款。</p>
+<section class="trust" id="trust">
+  <div class="trust-grid">
+    <div class="trust-item">
+      <div class="trust-num">30 秒</div>
+      <div class="trust-lbl">付款完成後平均出票時間</div>
     </div>
-    <div class="flow-step">
-      <div class="flow-num">02</div>
-      <h4>金流 Webhook</h4>
-      <p>付款成功後，金流回呼你的後端，帶上訂單編號與方案代碼。</p>
+    <div class="trust-item">
+      <div class="trust-num">24 小時</div>
+      <div class="trust-lbl">客服信箱回覆</div>
     </div>
-    <div class="flow-step">
-      <div class="flow-num">03</div>
-      <h4>批發商 API 下單</h4>
-      <p>後端用你的 Access Code + 密鑰呼叫 eSIM Access / eSIM Go，取得 QR Code (LPA 字串)。</p>
+    <div class="trust-item">
+      <div class="trust-num">7 天</div>
+      <div class="trust-lbl">未啟用可申請退款</div>
     </div>
-    <div class="flow-step">
-      <div class="flow-num">04</div>
-      <h4>出票給客人</h4>
-      <p>把 QR Code 寫回訂單，Email 或網頁直接顯示，客人掃描即可安裝。</p>
-    </div>
-  </div>
-
-  <div class="code-panel" id="code">
-    <div class="code-head">
-      <span>server / esim-provider.ts</span>
-      <div class="code-tabs">
-        <div class="code-tab active" data-p="access">eSIM Access</div>
-        <div class="code-tab" data-p="go">eSIM Go</div>
-      </div>
-    </div>
-    <pre id="codeBlock"></pre>
-  </div>
-
-  <div class="note" style="margin-top:20px; background:rgba(232,163,61,0.1); border-color:rgba(232,163,61,0.3); color:rgba(247,245,239,0.85);">
-    ⚠️ 這份範例是「後端」該長的樣子。API 密鑰絕對不要放進前端 JS 或這個 HTML 檔案裡 —— 瀏覽器下單按鈕實際上是呼叫 <code>/api/checkout</code> 這種你自己伺服器的路由，由伺服器代為呼叫批發商 API，這樣金鑰才不會外洩、也能繞開瀏覽器端的 CORS 限制。
   </div>
 </section>
 
-<footer>單檔展示頁面 · 方案價格與流量為示意數據，實際請以批發商當期報價為準</footer>
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">連線登機證 <span style="color:var(--teal)">· eSIM</span></div>
+    <div class="footer-links">
+      <a href="mailto:support@yourshop.example">客服信箱</a>
+      <span class="footer-dot">·</span>
+      <span>© 2026 連線登機證</span>
+    </div>
+  </div>
+</footer>
 
 <!-- ORDER MODAL -->
 <div class="overlay" id="overlay">
@@ -421,7 +372,7 @@ function openOrder(plan){
       <div class="row"><span>${plan.flag} ${plan.name}</span><span>${plan.gb} / ${plan.days}</span></div>
       <div class="row total"><span>應付金額</span><span>NT$${plan.price}</span></div>
     </div>
-    <label>Email（用於接收備援連結）</label>
+    <label>Email（用於接收訂單確認信與 QR Code）</label>
     <input type="email" id="orderEmail" placeholder="you@example.com">
   `;
   modalFooter.innerHTML = `<button class="btn btn-primary full-btn" id="payBtn">前往付款</button>`;
@@ -465,61 +416,6 @@ async function payNow(plan){
 
 function closeModal(){ overlay.classList.remove('show'); }
 overlay.onclick = (e)=>{ if(e.target===overlay) closeModal(); };
-
-// ---- Code panel ----
-const codeBlock = document.getElementById('codeBlock');
-const SNIPPETS = {
-  access: `<span class="tok-com">// 後端範例：Node.js 呼叫 eSIM Access 批發 API 下單</span>
-<span class="tok-key">async function</span> <span class="tok-fn">orderEsimAccess</span>(orderId, packageCode) {
-  <span class="tok-key">const</span> res = <span class="tok-key">await</span> fetch(
-    <span class="tok-str">'https://api.esimaccess.com/api/v1/open/esim/order'</span>,
-    {
-      method: <span class="tok-str">'POST'</span>,
-      headers: {
-        <span class="tok-str">'RT-AccessCode'</span>: process.env.ESIMACCESS_ACCESS_CODE,
-        <span class="tok-str">'Content-Type'</span>: <span class="tok-str">'application/json'</span>
-      },
-      body: JSON.stringify({
-        transactionId: orderId,     <span class="tok-com">// 你自己的訂單編號,用來對帳</span>
-        packageInfoList: [{ packageCode, count: 1 }]
-      })
-    }
-  );
-  <span class="tok-key">const</span> data = <span class="tok-key">await</span> res.json();
-  <span class="tok-com">// data 內含 QR code (LPA) 字串與 iccid,寫回你自己的訂單資料表</span>
-  <span class="tok-key">return</span> data;
-}`,
-  go: `<span class="tok-com">// 後端範例：Node.js 呼叫 eSIM Go 批發 API 下單</span>
-<span class="tok-key">async function</span> <span class="tok-fn">orderEsimGo</span>(orderId, bundleName) {
-  <span class="tok-key">const</span> res = <span class="tok-key">await</span> fetch(
-    <span class="tok-str">'https://api.esim-go.com/v2.4/orders'</span>,
-    {
-      method: <span class="tok-str">'POST'</span>,
-      headers: {
-        <span class="tok-str">'X-API-Key'</span>: process.env.ESIMGO_API_KEY,
-        <span class="tok-str">'Content-Type'</span>: <span class="tok-str">'application/json'</span>
-      },
-      body: JSON.stringify({
-        type: <span class="tok-str">'validate'</span>,   <span class="tok-com">// 正式下單改為 'transaction'</span>
-        assign: <span class="tok-key">true</span>,
-        order: [{ type: <span class="tok-str">'bundle'</span>, item: bundleName, quantity: 1 }]
-      })
-    }
-  );
-  <span class="tok-key">const</span> data = <span class="tok-key">await</span> res.json();
-  <span class="tok-com">// data.orders[0] 內含 iccid、QR code 資訊,寫回訂單資料表</span>
-  <span class="tok-key">return</span> data;
-}`
-};
-function setCode(p){ codeBlock.innerHTML = SNIPPETS[p]; }
-setCode('access');
-document.querySelectorAll('.code-tab').forEach(t=>{
-  t.onclick = ()=>{
-    document.querySelectorAll('.code-tab').forEach(x=>x.classList.remove('active'));
-    t.classList.add('active');
-    setCode(t.dataset.p);
-  };
-});
 </script>
 </body>
 </html>
