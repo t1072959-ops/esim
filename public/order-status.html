@@ -3,233 +3,164 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>訂單狀態｜eSIM 出貨單</title>
+<title>訂單狀態｜連線登機證 · eSIM</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
   :root{
-    --paper:#F7F5EF;
-    --card:#FFFFFF;
     --ink:#16233F;
-    --ink-soft:#5B6785;
-    --ink-faint:#98A2BC;
-    --hairline:#DAD4C3;
-    --teal:#2F6F5E;
-    --teal-bg:#E8F1EC;
-    --amber:#B8792F;
-    --amber-bg:#F7EEE0;
-    --rust:#A8422F;
-    --rust-bg:#F6E7E2;
-    --radius:20px;
+    --ink-soft:#2B3A5C;
+    --ink-faint:#8A93AC;
+    --paper:#F7F5EF;
+    --paper-dim:#EDE9DE;
+    --gold:#E8A33D;
+    --teal:#2F9E8F;
+    --teal-bg:#E4F3F0;
+    --red:#C1502E;
+    --red-bg:#FBEAE4;
+    --line: rgba(22,35,63,0.16);
+    --mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
   }
   *{box-sizing:border-box;}
   body{
     margin:0;
-    min-height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:32px 16px;
     background:var(--paper);
-    background-image:
-      radial-gradient(circle at 12% 8%, rgba(22,35,63,0.05) 0, transparent 40%),
-      radial-gradient(circle at 88% 92%, rgba(47,111,94,0.06) 0, transparent 40%);
-    font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
     color:var(--ink);
+    font-family:'Inter',-apple-system,'Segoe UI','PingFang TC','Noto Sans TC',sans-serif;
+    -webkit-font-smoothing:antialiased;
   }
-  .mono{ font-family:"IBM Plex Mono","SFMono-Regular",Menlo,Consolas,monospace; }
+  a{ color:inherit; }
+
+  header{
+    padding:22px 6vw; display:flex; justify-content:space-between; align-items:center;
+    border-bottom:1px solid var(--line);
+  }
+  .logo{ display:flex; align-items:center; gap:10px; text-decoration:none; }
+  .logo-mark{ width:30px; height:30px; border-radius:7px; background:var(--ink); position:relative; }
+  .logo-mark::after{ content:''; position:absolute; inset:7px; border:2px solid var(--gold); border-radius:3px; }
+  .logo-text{ font-weight:700; letter-spacing:0.02em; font-size:14px; color:var(--ink); }
+  .logo-text span{ color:var(--teal); }
+  header nav a{ color:var(--ink-soft); text-decoration:none; font-size:13px; font-weight:500; }
+  header nav a:hover{ color:var(--gold); }
+
+  main{ display:flex; justify-content:center; padding:48px 16px 80px; }
 
   .pass{
-    width:100%;
-    max-width:400px;
-    background:var(--card);
-    border-radius:var(--radius);
-    box-shadow:0 24px 60px rgba(22,35,63,0.16), 0 2px 8px rgba(22,35,63,0.08);
-    overflow:hidden;
-    position:relative;
-    animation:rise .5s cubic-bezier(.2,.7,.3,1) both;
+    width:100%; max-width:400px; background:#fff; border-radius:16px;
+    border:1px solid var(--line); box-shadow:0 20px 50px rgba(22,35,63,0.14);
+    overflow:hidden; animation:rise .45s cubic-bezier(.2,.7,.3,1) both;
   }
   @keyframes rise{ from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:translateY(0);} }
 
-  .stub{
-    padding:22px 24px 20px;
-    position:relative;
+  .test-banner{
+    background:var(--ink); color:var(--paper); font-family:var(--mono); font-size:11px;
+    text-align:center; padding:6px; letter-spacing:.04em;
   }
+
+  .stub{ padding:22px 24px 18px; position:relative; }
   .eyebrow{
-    font-size:11px;
-    letter-spacing:.14em;
-    text-transform:uppercase;
-    color:var(--ink-faint);
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
+    font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--teal); display:flex; align-items:center; gap:8px;
   }
-  .headline{
-    font-size:21px;
-    font-weight:700;
-    line-height:1.35;
-    margin:10px 60px 4px 0;
-  }
-  .meta-row{
-    display:flex;
-    justify-content:space-between;
-    font-size:12.5px;
-    color:var(--ink-soft);
-    margin-top:10px;
-  }
+  .eyebrow::before{ content:''; width:18px; height:1px; background:var(--teal); }
+  .headline{ font-size:21px; font-weight:800; line-height:1.35; margin:12px 78px 4px 0; letter-spacing:-0.01em; }
+  .meta-row{ display:flex; justify-content:space-between; font-family:var(--mono); font-size:12px; color:var(--ink-soft); margin-top:10px; }
   .meta-row .amount{ font-weight:700; color:var(--ink); }
 
-  /* rotated stamp, top-right corner of the stub */
   .stamp{
-    position:absolute;
-    top:20px;
-    right:20px;
-    border:2px solid currentColor;
-    border-radius:8px;
-    padding:5px 9px;
-    font-size:11px;
-    font-weight:700;
-    letter-spacing:.06em;
-    transform:rotate(8deg);
-    white-space:nowrap;
+    position:absolute; top:20px; right:20px; border:2px solid currentColor; border-radius:8px;
+    padding:5px 9px; font-family:var(--mono); font-size:10.5px; font-weight:700; letter-spacing:.05em;
+    transform:rotate(7deg); white-space:nowrap;
   }
   .stamp.-issued{ color:var(--teal); }
-  .stamp.-processing{ color:var(--amber); }
-  .stamp.-failed{ color:var(--rust); }
+  .stamp.-processing{ color:var(--gold); }
+  .stamp.-failed{ color:var(--red); }
 
-  /* ticket perforation divider */
-  .tear{
-    position:relative;
-    height:0;
-    border-top:2px dashed var(--hairline);
-    margin:4px 0;
-  }
-  .tear::before,.tear::after{
-    content:"";
-    position:absolute;
-    top:-11px;
-    width:22px;
-    height:22px;
-    background:var(--paper);
-    border-radius:50%;
-  }
-  .tear::before{ left:-11px; }
-  .tear::after{ right:-11px; }
+  .perf{ position:relative; height:0; border-top:2px dashed var(--line); margin:4px 0; }
+  .perf::before,.perf::after{ content:''; position:absolute; top:-11px; width:22px; height:22px; background:var(--paper); border-radius:50%; }
+  .perf::before{ left:-11px; } .perf::after{ right:-11px; }
 
   .body{ padding:22px 24px 26px; }
 
-  /* ---- loading state ---- */
   .loading{ text-align:center; padding:30px 10px; color:var(--ink-soft); font-size:14px; }
   .dot-pulse{ display:inline-flex; gap:5px; margin-bottom:14px; }
-  .dot-pulse span{
-    width:7px; height:7px; border-radius:50%; background:var(--ink-faint);
-    animation:pulse 1.1s ease-in-out infinite;
-  }
-  .dot-pulse span:nth-child(2){ animation-delay:.15s; }
-  .dot-pulse span:nth-child(3){ animation-delay:.3s; }
+  .dot-pulse span{ width:7px; height:7px; border-radius:50%; background:var(--ink-faint); animation:pulse 1.1s ease-in-out infinite; }
+  .dot-pulse span:nth-child(2){ animation-delay:.15s; } .dot-pulse span:nth-child(3){ animation-delay:.3s; }
   @keyframes pulse{ 0%,80%,100%{ opacity:.25; transform:scale(.8);} 40%{ opacity:1; transform:scale(1);} }
 
-  /* ---- processing state ---- */
-  .processing-note{
-    background:var(--amber-bg); color:var(--amber);
-    border-radius:12px; padding:14px 16px; font-size:13.5px; line-height:1.6;
-    text-align:center;
-  }
+  .processing-note{ background:#FFF7E8; color:#8A5A10; border:1px solid #F0DBAA; border-radius:10px; padding:14px 16px; font-size:13.5px; line-height:1.6; text-align:center; }
 
-  /* ---- issued state ---- */
-  .qr-wrap{
-    display:flex; justify-content:center; padding:6px 0 16px;
+  .save-box{
+    background:var(--paper-dim); border-radius:10px; padding:13px 15px; margin-bottom:18px;
+    font-size:12.5px; line-height:1.6; color:var(--ink-soft);
   }
-  #qrcode{
-    padding:14px; background:#fff; border:1px solid var(--hairline); border-radius:14px;
+  .save-box strong{ color:var(--ink); }
+  .save-row{ display:flex; gap:8px; margin-top:9px; }
+  .save-row input{
+    flex:1; min-width:0; font-family:var(--mono); font-size:11px; padding:8px 10px;
+    border:1px solid var(--line); border-radius:7px; background:#fff; color:var(--ink-soft);
   }
-  #qrcode img{ display:block; }
+  .save-row button{
+    flex:0 0 auto; border:none; background:var(--ink); color:var(--paper); font-size:11.5px; font-weight:700;
+    padding:0 14px; border-radius:7px; cursor:pointer; font-family:inherit;
+  }
+  .save-row button:active{ transform:scale(.97); }
+  .email-note{ margin-top:8px; font-size:12px; }
+
+  .qr-wrap{ display:flex; justify-content:center; padding:6px 0 16px; }
+  #qrcode{ padding:14px; background:#fff; border:1px solid var(--line); border-radius:12px; }
   .scan-hint{ text-align:center; font-size:12.5px; color:var(--ink-soft); margin-top:-6px; margin-bottom:18px; }
 
-  .tabs{ display:flex; gap:6px; background:var(--paper); border-radius:11px; padding:4px; margin-bottom:14px; }
-  .tab{
-    flex:1; text-align:center; padding:8px 0; font-size:13px; font-weight:600;
-    border-radius:8px; cursor:pointer; color:var(--ink-soft); user-select:none;
-  }
-  .tab.active{ background:var(--card); color:var(--ink); box-shadow:0 1px 4px rgba(22,35,63,0.12); }
+  .tabs{ display:flex; gap:6px; background:var(--paper-dim); border-radius:10px; padding:4px; margin-bottom:14px; }
+  .tab{ flex:1; text-align:center; padding:8px 0; font-size:13px; font-weight:600; border-radius:7px; cursor:pointer; color:var(--ink-soft); user-select:none; }
+  .tab.active{ background:#fff; color:var(--ink); box-shadow:0 1px 4px rgba(22,35,63,0.12); }
 
   .steps{ list-style:none; margin:0 0 16px; padding:0; counter-reset:step; }
-  .steps li{
-    counter-increment:step;
-    display:flex; gap:10px; align-items:flex-start;
-    font-size:13.5px; line-height:1.6; color:var(--ink); padding:7px 0;
-  }
+  .steps li{ counter-increment:step; display:flex; gap:10px; align-items:flex-start; font-size:13.5px; line-height:1.6; color:var(--ink); padding:7px 0; }
   .steps li::before{
-    content:counter(step);
-    flex:0 0 auto;
-    width:20px; height:20px; border-radius:50%;
-    background:var(--teal-bg); color:var(--teal);
-    font-family:"IBM Plex Mono",monospace; font-size:11px; font-weight:700;
-    display:flex; align-items:center; justify-content:center;
-    margin-top:1px;
+    content:counter(step); flex:0 0 auto; width:20px; height:20px; border-radius:50%;
+    background:var(--teal-bg); color:var(--teal); font-family:var(--mono); font-size:11px; font-weight:700;
+    display:flex; align-items:center; justify-content:center; margin-top:1px;
   }
 
-  .manual-toggle{
-    font-size:12.5px; color:var(--teal); text-align:center; cursor:pointer;
-    text-decoration:underline; text-underline-offset:3px; margin-top:2px;
-  }
-  .manual-box{
-    display:none; margin-top:12px; background:var(--paper); border-radius:10px; padding:12px 14px;
-  }
+  .manual-toggle{ font-family:var(--mono); font-size:12px; color:var(--teal); text-align:center; cursor:pointer; text-decoration:underline; text-underline-offset:3px; margin-top:2px; }
+  .manual-box{ display:none; margin-top:12px; background:var(--paper-dim); border-radius:10px; padding:12px 14px; }
   .manual-box.open{ display:block; }
-  .manual-row{ margin-bottom:8px; }
-  .manual-row:last-child{ margin-bottom:0; }
-  .manual-label{ font-size:11px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.06em; margin-bottom:3px; }
-  .manual-value{
-    font-size:12px; word-break:break-all; background:#fff; border:1px solid var(--hairline);
-    border-radius:7px; padding:8px 10px; display:flex; justify-content:space-between; gap:8px; align-items:center;
-  }
-  .copy-btn{
-    flex:0 0 auto; border:none; background:var(--teal); color:#fff; font-size:11px; font-weight:700;
-    padding:5px 9px; border-radius:6px; cursor:pointer; font-family:inherit;
-  }
-  .copy-btn:active{ opacity:.8; }
+  .manual-row{ margin-bottom:8px; } .manual-row:last-child{ margin-bottom:0; }
+  .manual-label{ font-family:var(--mono); font-size:10.5px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.05em; margin-bottom:3px; }
+  .manual-value{ font-family:var(--mono); font-size:12px; word-break:break-all; background:#fff; border:1px solid var(--line); border-radius:7px; padding:8px 10px; display:flex; justify-content:space-between; gap:8px; align-items:center; }
+  .copy-btn{ flex:0 0 auto; border:none; background:var(--teal); color:#fff; font-size:11px; font-weight:700; padding:5px 9px; border-radius:6px; cursor:pointer; font-family:inherit; }
 
-  /* ---- failed states ---- */
-  .fail-note{
-    background:var(--rust-bg); color:var(--rust);
-    border-radius:12px; padding:16px; font-size:13.5px; line-height:1.7; text-align:center;
-  }
-  .support-box{
-    margin-top:16px; border-top:1px dashed var(--hairline); padding-top:16px; text-align:center;
-  }
+  .fail-note{ background:var(--red-bg); color:var(--red); border-radius:10px; padding:16px; font-size:13.5px; line-height:1.7; text-align:center; }
+  .support-box{ margin-top:16px; border-top:1px dashed var(--line); padding-top:16px; text-align:center; }
   .support-box .label{ font-size:12px; color:var(--ink-faint); margin-bottom:6px; }
-  .support-box a{
-    display:inline-block; color:var(--ink); font-weight:700; font-size:13.5px;
-    text-decoration:none; border-bottom:2px solid var(--teal);
-  }
+  .support-box a{ display:inline-block; color:var(--ink); font-weight:700; font-size:13.5px; text-decoration:none; border-bottom:2px solid var(--teal); }
 
-  .btn-back{
-    display:block; width:100%; margin-top:16px; padding:12px; border:none; border-radius:10px;
-    background:var(--ink); color:#fff; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit;
-  }
-
-  .test-banner{
-    background:var(--ink); color:#fff; font-size:11px; text-align:center; padding:6px;
-    letter-spacing:.04em; font-family:"IBM Plex Mono",monospace;
-  }
+  .btn-back{ display:block; width:100%; margin-top:16px; padding:12px; border:none; border-radius:9px; background:var(--ink); color:var(--paper); font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; }
 </style>
 </head>
 <body>
 
+<header>
+  <a class="logo" href="/">
+    <div class="logo-mark"></div>
+    <div class="logo-text">連線登機證 <span>· eSIM</span></div>
+  </a>
+  <nav><a href="/">回商店</a></nav>
+</header>
+
+<main>
   <div class="pass" id="pass" style="display:none;">
     <div class="test-banner" id="testBanner" style="display:none;">TEST MODE — 尚未真實出貨，qrCode 為測試佔位字串</div>
     <div class="stub">
       <div class="eyebrow"><span>行動連線 · MOBILE DATA</span></div>
       <div class="headline" id="planName">—</div>
       <div class="meta-row">
-        <span class="mono" id="orderIdText">—</span>
+        <span id="orderIdText">—</span>
         <span class="amount" id="amountText">—</span>
       </div>
       <div class="stamp" id="stamp">—</div>
     </div>
-
-    <div class="tear"></div>
-
+    <div class="perf"></div>
     <div class="body" id="content">
       <div class="loading">
         <div class="dot-pulse"><span></span><span></span><span></span></div>
@@ -237,6 +168,7 @@
       </div>
     </div>
   </div>
+</main>
 
 <script>
 const params = new URLSearchParams(location.search);
@@ -257,13 +189,40 @@ function renderStamp(kind, text){
   stamp.textContent = text;
 }
 
+function saveBox(email){
+  const url = location.href;
+  const emailLine = email
+    ? `<div class="email-note">我們也寄了這個連結到 <strong>${email}</strong>，之後可以直接翻信箱找回來。</div>`
+    : '';
+  return `
+    <div class="save-box">
+      <strong>先把這頁存起來。</strong>這個網址就是你的提貨憑證，關掉分頁後只能靠這條連結（或信箱裡的信）找回 QR Code。
+      <div class="save-row">
+        <input readonly id="saveUrl" value="${url}">
+        <button id="copyUrlBtn" type="button">複製連結</button>
+      </div>
+      ${emailLine}
+    </div>`;
+}
+
 function parseLpa(raw){
-  // Standard SGP.22 format: LPA:1$smdp.address.com$ACTIVATION-CODE
   if (typeof raw === 'string' && raw.startsWith('LPA:')) {
     const parts = raw.split('$');
     if (parts.length >= 3) return { address: parts[1], code: parts[2] };
   }
   return null;
+}
+
+function bindCopyUrl(){
+  const btn = document.getElementById('copyUrlBtn');
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    const input = document.getElementById('saveUrl');
+    input.select();
+    navigator.clipboard?.writeText(input.value);
+    btn.textContent = '已複製';
+    setTimeout(() => btn.textContent = '複製連結', 1200);
+  });
 }
 
 function renderIssued(data){
@@ -274,26 +233,22 @@ function renderIssued(data){
   const lpa = parseLpa(raw);
 
   content.innerHTML = `
+    ${saveBox(data.email)}
     <div class="qr-wrap"><div id="qrcode"></div></div>
     <div class="scan-hint">用「另一支手機」或平板掃描上方 QR Code 安裝</div>
-
     <div class="tabs">
       <div class="tab active" data-os="ios">iPhone</div>
       <div class="tab" data-os="android">Android</div>
     </div>
     <ul class="steps" id="stepsList"></ul>
-
     <div class="manual-toggle" id="manualToggle">機器掃不到？改用手動輸入</div>
     <div class="manual-box" id="manualBox"></div>
   `;
+  bindCopyUrl();
 
-  // client-side QR render (never sent to a third-party server)
   if (raw && raw !== 'TEST_MODE_NO_REAL_ESIM_ORDERED') {
     // eslint-disable-next-line no-undef
-    new QRCode(document.getElementById('qrcode'), {
-      text: raw, width: 200, height: 200,
-      correctLevel: QRCode.CorrectLevel.M,
-    });
+    new QRCode(document.getElementById('qrcode'), { text: raw, width: 200, height: 200, correctLevel: QRCode.CorrectLevel.M });
   } else {
     document.getElementById('qrcode').innerHTML =
       '<div style="width:200px;height:200px;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--ink-faint);text-align:center;padding:10px;">測試模式<br>尚無真實 QR 資料</div>';
@@ -313,13 +268,8 @@ function renderIssued(data){
       '安裝完成後，到 SIM 卡設定中開啟這張 eSIM 的行動數據',
     ],
   };
-
-  function renderSteps(os){
-    document.getElementById('stepsList').innerHTML =
-      STEPS[os].map(s => `<li>${s}</li>`).join('');
-  }
+  function renderSteps(os){ document.getElementById('stepsList').innerHTML = STEPS[os].map(s => `<li>${s}</li>`).join(''); }
   renderSteps('ios');
-
   document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', () => {
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -331,27 +281,14 @@ function renderIssued(data){
   const manualBox = document.getElementById('manualBox');
   if (lpa) {
     manualBox.innerHTML = `
-      <div class="manual-row">
-        <div class="manual-label">SM-DP+ 位址</div>
-        <div class="manual-value"><span class="mono">${lpa.address}</span><button class="copy-btn" data-copy="${lpa.address}">複製</button></div>
-      </div>
-      <div class="manual-row">
-        <div class="manual-label">啟用碼</div>
-        <div class="manual-value"><span class="mono">${lpa.code}</span><button class="copy-btn" data-copy="${lpa.code}">複製</button></div>
-      </div>`;
+      <div class="manual-row"><div class="manual-label">SM-DP+ 位址</div><div class="manual-value"><span>${lpa.address}</span><button class="copy-btn" data-copy="${lpa.address}">複製</button></div></div>
+      <div class="manual-row"><div class="manual-label">啟用碼</div><div class="manual-value"><span>${lpa.code}</span><button class="copy-btn" data-copy="${lpa.code}">複製</button></div></div>`;
   } else if (raw && raw !== 'TEST_MODE_NO_REAL_ESIM_ORDERED') {
-    manualBox.innerHTML = `
-      <div class="manual-row">
-        <div class="manual-label">啟用碼</div>
-        <div class="manual-value"><span class="mono">${raw}</span><button class="copy-btn" data-copy="${raw}">複製</button></div>
-      </div>`;
+    manualBox.innerHTML = `<div class="manual-row"><div class="manual-label">啟用碼</div><div class="manual-value"><span>${raw}</span><button class="copy-btn" data-copy="${raw}">複製</button></div></div>`;
   } else {
     manualBox.innerHTML = `<div style="font-size:12.5px;color:var(--ink-soft);">測試模式下沒有可輸入的資料。</div>`;
   }
-
-  document.getElementById('manualToggle').addEventListener('click', () => {
-    manualBox.classList.toggle('open');
-  });
+  document.getElementById('manualToggle').addEventListener('click', () => manualBox.classList.toggle('open'));
   manualBox.addEventListener('click', (e) => {
     if (e.target.matches('.copy-btn')) {
       navigator.clipboard?.writeText(e.target.dataset.copy);
@@ -364,9 +301,9 @@ function renderIssued(data){
 function renderProcessing(data, label){
   renderStamp('processing', label);
   content.innerHTML = `
-    <div class="processing-note">
-      正在為你準備 eSIM，通常在幾秒到一分鐘內完成。<br>這個頁面會自動更新，請不要關閉。
-    </div>`;
+    ${saveBox(data.email)}
+    <div class="processing-note">正在為你準備 eSIM，通常在幾秒到一分鐘內完成。<br>這個頁面會自動更新，請不要關閉。</div>`;
+  bindCopyUrl();
 }
 
 function renderPaymentFailed(){
@@ -392,7 +329,7 @@ async function poll(){
     if (res.status === 404) {
       pass.style.display = 'block';
       document.querySelector('.stub').style.display = 'none';
-      document.querySelector('.tear').style.display = 'none';
+      document.querySelector('.perf').style.display = 'none';
       content.innerHTML = '<div class="loading">找不到這筆訂單，請確認連結是否正確。</div>';
       return;
     }
@@ -404,7 +341,7 @@ async function poll(){
     if (data.status === 'esim_order_failed') { renderEsimFailed(data); return; }
     if (data.status === 'payment_failed') { renderPaymentFailed(); return; }
     if (data.status === 'paid') { renderProcessing(data, '● 出貨中'); setTimeout(poll, 2000); return; }
-    renderProcessing(data, '● 等待付款'); // pending_payment
+    renderProcessing(data, '● 等待付款');
     setTimeout(poll, 2000);
   }catch(e){
     content.innerHTML = '<div class="loading">查詢失敗，請重新整理頁面重試。</div>';
@@ -415,8 +352,8 @@ if (orderId) { poll(); }
 else {
   pass.style.display = 'block';
   document.querySelector('.stub').style.display = 'none';
-  document.querySelector('.tear').style.display = 'none';
-  content.innerHTML = '<div class="loading">缺少訂單編號（orderId），請從購買完成的連結重新進入。</div>';
+  document.querySelector('.perf').style.display = 'none';
+  content.innerHTML = '<div class="loading">缺少訂單編號（orderId），請從購買完成的連結重新進入，或到信箱找我們寄給你的確認信。</div>';
 }
 </script>
 </body>

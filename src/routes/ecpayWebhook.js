@@ -3,8 +3,13 @@ const { verifyCallback } = require('../ecpay');
 const { getOrder, updateOrder } = require('../db');
 const { getPlan } = require('../catalog');
 const esim = require('../esimAccessClient');
+const { sendOrderReceivedEmail, sendEsimReadyEmail } = require('../email');
 
 const router = express.Router();
+
+function statusUrlFor(orderId) {
+  return `${process.env.PUBLIC_BASE_URL}/order-status.html?orderId=${orderId}`;
+}
 
 // ECPay POSTs application/x-www-form-urlencoded to this endpoint after payment.
 router.post('/webhooks/ecpay', express.urlencoded({ extended: false }), async (req, res) => {
@@ -24,6 +29,9 @@ router.post('/webhooks/ecpay', express.urlencoded({ extended: false }), async (r
     return res.send('0|OrderNotFound');
   }
 
+  const plan = getPlan(order.planId);
+  const planName = plan ? plan.name : order.planId;
+
   // RtnCode "1" means payment succeeded. Any other value = failed/cancelled.
   if (String(body.RtnCode) !== '1') {
     updateOrder(orderId, { status: 'payment_failed', ecpayRtnMsg: body.RtnMsg });
@@ -31,6 +39,20 @@ router.post('/webhooks/ecpay', express.urlencoded({ extended: false }), async (r
   }
 
   updateOrder(orderId, { status: 'paid' });
+
+  // Email the order-status link the moment payment is confirmed - this is
+  // the customer's only way back to their QR code if they close the tab
+  // before the eSIM finishes provisioning. No-ops silently if RESEND_API_KEY
+  // isn't configured (see src/email.js).
+  if (order.email) {
+    sendOrderReceivedEmail({
+      to: order.email,
+      orderId,
+      planName,
+      amountTwd: order.amountTwd,
+      statusUrl: statusUrlFor(orderId),
+    }).catch(err => console.error('[ecpay webhook] order-received email failed:', err.message));
+  }
 
   // Testing escape hatch: set SKIP_ESIM_ORDER=true in .env to verify the
   // ECPay payment flow end-to-end WITHOUT placing a real (money-spending)
@@ -46,7 +68,6 @@ router.post('/webhooks/ecpay', express.urlencoded({ extended: false }), async (r
 
   // 2. Payment confirmed -> order the real eSIM from the wholesaler.
   try {
-    const plan = getPlan(order.planId);
     const orderResult = await esim.orderPackage({
       transactionId: orderId,           // reuse our own order id so it's traceable end to end
       packageCode: plan.packageCode,
@@ -67,6 +88,15 @@ router.post('/webhooks/ecpay', express.urlencoded({ extended: false }), async (r
     });
 
     console.log(`[ecpay webhook] order ${orderId} issued successfully`);
+
+    if (order.email) {
+      sendEsimReadyEmail({
+        to: order.email,
+        orderId,
+        planName,
+        statusUrl: statusUrlFor(orderId),
+      }).catch(err => console.error('[ecpay webhook] esim-ready email failed:', err.message));
+    }
   } catch (err) {
     console.error(`[ecpay webhook] eSIM Access order failed for ${orderId}:`, err.message);
     updateOrder(orderId, { status: 'esim_order_failed', error: err.message });

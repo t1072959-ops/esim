@@ -18,6 +18,7 @@ router.get('/orders/:orderId', (req, res) => {
     planName: plan ? plan.name : order.planId,
     amountTwd: order.amountTwd || (plan ? plan.retailPriceTwd : null),
     createdAt: order.createdAt || null,
+    email: order.email || null,
     qrCode: order.qrCode || null,
     iccid: order.iccid || null,
     error: order.status === 'esim_order_failed' ? '出票時發生問題，我們已收到通知並會盡快處理；您也可以直接聯繫客服協助處理或退款。' : undefined,
