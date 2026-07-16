@@ -9,35 +9,36 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --paper:#FFFFFF;
-    --paper-dim:#F5F4F1;
+    --paper:#F2EFE6;
+    --paper-dim:#E8E3D5;
     --card:#FFFFFF;
-    --ink:#241C14;
-    --ink-soft:#69604F;
-    --ink-faint:#948A76;
-    --accent:#C1502E;
-    --accent-deep:#9C3E22;
-    --gold:#E8A33D;
+    --ink:#16233F;
+    --ink-deep:#0F1830;
+    --ink-soft:#4A5670;
+    --ink-faint:#8891A6;
+    --accent:#9C7325;
+    --accent-deep:#7A5A1C;
+    --gold:#D4A94B;
     --teal:#2F9E8F;
-    --line: rgba(36,28,20,0.12);
-    --line-strong: rgba(36,28,20,0.24);
+    --line: rgba(22,35,63,0.12);
+    --line-strong: rgba(22,35,63,0.24);
     --sans: 'Inter', 'Noto Sans TC', -apple-system, 'PingFang TC', sans-serif;
     --mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
   }
   *{box-sizing:border-box;}
   html{scroll-behavior:smooth;}
   body{ margin:0; background:var(--paper); color:var(--ink); font-family:var(--sans); -webkit-font-smoothing:antialiased; line-height:1.5; }
-  ::selection{ background:var(--accent); color:#fff; }
+  ::selection{ background:var(--ink); color:#fff; }
 
-  header{ padding:22px 6vw; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--line); position:sticky; top:0; background:rgba(255,255,255,0.92); backdrop-filter:blur(8px); z-index:40; }
-  .brand{ display:flex; align-items:center; gap:10px; font-weight:800; font-size:15.5px; }
-  .brand-mark{ width:28px; height:28px; border-radius:8px; background:var(--ink); position:relative; }
-  .brand-mark::after{ content:''; position:absolute; inset:7px; border:2px solid var(--gold); border-radius:3px; }
+  header{ padding:18px 6vw; display:flex; justify-content:space-between; align-items:center; border-bottom:3px solid var(--gold); position:sticky; top:0; background:var(--ink); z-index:40; box-shadow:0 4px 16px rgba(22,35,63,0.18); }
+  .brand{ display:flex; align-items:center; gap:10px; font-weight:800; font-size:15.5px; color:#fff; }
+  .brand-mark{ width:28px; height:28px; border-radius:8px; background:#fff; position:relative; }
+  .brand-mark::after{ content:''; position:absolute; inset:7px; border:2px solid var(--ink); border-radius:3px; }
   nav{ display:flex; align-items:center; gap:28px; }
-  nav a{ color:var(--ink-soft); text-decoration:none; font-size:13.5px; font-weight:600; }
-  nav a:hover{ color:var(--accent); }
-  .nav-cta{ background:var(--accent); color:#fff !important; padding:9px 18px; border-radius:8px; }
-  .nav-cta:hover{ background:var(--accent-deep); }
+  nav a{ color:#C9D0DE; text-decoration:none; font-size:13.5px; font-weight:600; }
+  nav a:hover{ color:var(--gold); }
+  .nav-cta{ background:var(--gold); color:var(--ink) !important; padding:9px 18px; border-radius:6px; font-weight:800; }
+  .nav-cta:hover{ background:#E4BC6C; }
 
   /* ---------- HERO (boarding pass restored) ---------- */
   .hero{ padding:7vh 6vw 6vh; display:grid; grid-template-columns:1.1fr 0.9fr; gap:44px; align-items:center; }
@@ -46,13 +47,13 @@
   h1 .accent{ color:var(--accent); }
   .hero p{ font-size:15.5px; line-height:1.85; color:var(--ink-soft); max-width:48ch; margin:0 0 30px; }
   .btn{ border:none; cursor:pointer; font-weight:700; font-size:14px; padding:14px 26px; border-radius:8px; transition:all .15s ease; }
-  .btn-primary{ background:var(--accent); color:#fff; }
-  .btn-primary:hover{ background:var(--accent-deep); }
+  .btn-primary{ background:var(--ink); color:#fff; }
+  .btn-primary:hover{ background:var(--ink-deep); }
   .btn-ghost{ background:transparent; color:var(--ink); border:1.5px solid var(--line-strong); }
   .btn-ghost:hover{ border-color:var(--ink); }
   .hero-actions{ display:flex; gap:14px; }
 
-  .stub-preview{ background:var(--ink); border-radius:16px; padding:26px; position:relative; overflow:hidden; color:var(--paper); box-shadow:0 20px 50px rgba(36,28,20,0.28); }
+  .stub-preview{ background:var(--ink); border-radius:16px; padding:26px; position:relative; overflow:hidden; color:var(--paper); box-shadow:0 20px 50px rgba(22,35,63,0.28); }
   .stub-preview .row{ display:flex; justify-content:space-between; font-family:var(--mono); font-size:11px; opacity:0.65; text-transform:uppercase; letter-spacing:0.08em;}
   .stub-preview .route{ font-size:28px; font-weight:800; margin:14px 0 4px; letter-spacing:-0.02em;}
   .stub-preview .sub{ font-size:13px; opacity:0.72; margin-bottom:18px;}
@@ -124,8 +125,8 @@
   .config-bottom{ display:flex; justify-content:space-between; align-items:center; }
   .price{ font-size:26px; font-weight:800; color:var(--ink); }
   .price span{ font-size:12px; color:var(--ink-faint); font-weight:500; margin-left:4px;}
-  .buy-btn{ background:var(--accent); color:#fff; border:none; border-radius:8px; padding:13px 26px; font-weight:700; font-size:13.5px; cursor:pointer; }
-  .buy-btn:hover{ background:var(--accent-deep); }
+  .buy-btn{ background:var(--ink); color:#fff; border:none; border-radius:8px; padding:13px 26px; font-weight:700; font-size:13.5px; cursor:pointer; }
+  .buy-btn:hover{ background:var(--ink-deep); }
 
   /* ---------- HOW IT WORKS ---------- */
   .how{ padding:8vh 6vw; border-top:1px solid var(--line); }
@@ -163,9 +164,9 @@
   .footer-links a{ color:var(--ink-soft); text-decoration:none; }
   .footer-links a:hover{ color:var(--accent); }
 
-  .overlay{ position:fixed; inset:0; background:rgba(36,28,20,0.5); backdrop-filter:blur(3px); display:none; align-items:center; justify-content:center; z-index:50; padding:20px; }
+  .overlay{ position:fixed; inset:0; background:rgba(22,35,63,0.5); backdrop-filter:blur(3px); display:none; align-items:center; justify-content:center; z-index:50; padding:20px; }
   .overlay.show{ display:flex; }
-  .modal{ background:var(--card); border-radius:14px; width:min(420px,100%); overflow:hidden; box-shadow:0 30px 60px rgba(36,28,20,0.25); }
+  .modal{ background:var(--card); border-radius:14px; width:min(420px,100%); overflow:hidden; box-shadow:0 30px 60px rgba(22,35,63,0.25); }
   .modal-head{ padding:20px 24px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center;}
   .modal-head h3{ margin:0; font-size:16px; }
   .modal-close{ background:none; border:none; font-size:18px; cursor:pointer; color:var(--ink-soft); }
